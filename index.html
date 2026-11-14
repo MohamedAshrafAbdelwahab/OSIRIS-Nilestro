@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+  <meta name="description" content="OSIRIS — Abandoned But Not Forgotten: a space story game about the real NASA machines left behind on the Moon and Mars. By Team NileStro for the NASA Space Apps Challenge 2026." />
+
+  <meta name="theme-color" content="#060812" />
+
+  <title>OSIRIS — Abandoned But Not Forgotten</title>
+
+
+
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
+
+
+
+  <!-- خط بيكسل للإنجليزية + Handjet للعربية + VT323 لدليل ناسا -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Handjet:wght@400..900&display=swap"
+
+    rel="stylesheet"
+
+  />
+
+
+
+  <link rel="stylesheet" href="css/menu.css" />
+
+  <link rel="stylesheet" href="css/scene1.css" />
+
+  <link rel="stylesheet" href="css/scene2.css" />
+
+  <link rel="stylesheet" href="css/manual.css" />
+
+</head>
+
+<body data-page="menu" class="game-body">
+
+
+
+  <!-- طبقة الانتقال السلس (الشاشة السوداء → فايد) -->
+
+  <div id="transitionOverlay" class="transition-overlay"></div>
+
+
+
+  <!-- خلفية الفيديو (لوب) -->
+
+  <div class="video-wrap">
+
+    <video id="bgVideo" autoplay muted loop playsinline preload="auto">
+
+      <source src="assets/videos/menu-background.mp4" type="video/mp4" />
+
+    </video>
+
+  </div>
+
+
+
+  <!-- تدرّج لقراءة أفضل خلف القوائم (يتقلب تلقائياً مع الاتجاه) -->
+
+  <div class="readability-gradient"></div>
+
+
+
+  <!-- شريط الأيقونات العلوي — لغة + ملء الشاشة (صغير وأنيق) -->
+
+  <div class="top-bar" id="topBar">
+
+    <button class="icon-btn" id="btnLangSwitch" data-lang-label aria-label="Switch language"></button>
+
+    <button class="icon-btn" id="btnFullscreen" data-i18n-title="fullscreen" aria-label="Fullscreen">
+
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+
+        <path d="M4 4h6v2H6v4H4V4Zm10 0h6v6h-2V6h-4V4ZM4 14h2v4h4v2H4v-6Zm14 0h2v6h-6v-2h4v-4Z"/>
+
+      </svg>
+
+    </button>
+
+  </div>
+
+
+
+  <!-- منطقة القائمة -->
+
+  <main class="menu-side" id="menuSide">
+
+
+
+    <!-- العنوان -->
+
+    <header class="title-block">
+
+      <p class="project-label" id="projectLabel"></p>
+
+      <h1 class="game-title" id="gameTitle"></h1>
+
+      <p class="game-tagline" id="gameTagline"></p>
+
+      <p class="team-credit" id="teamCredit"></p>
+
+    </header>
+
+
+
+    <!-- الأزرار -->
+
+    <nav class="menu-buttons">
+
+      <button class="pixel-btn primary" id="btnNewGame" data-i18n="newGame">NEW GAME</button>
+
+      <button class="pixel-btn" id="btnContinue" data-i18n="continue">CONTINUE</button>
+
+      <button class="pixel-btn manual" id="btnManual">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+
+          <path d="M5.5 3A2.5 2.5 0 0 0 3 5.5v13A2.5 2.5 0 0 0 5.5 21H20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H5.5Z"/>
+
+          <path d="M5.5 5H7v14H5.5a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5Z"/>
+
+          <path d="M10 7.5h7M10 11h7M10 14.5h4.5" stroke="#06210f" stroke-width="1.6" stroke-linecap="round"/>
+
+        </svg>
+
+        <span data-i18n="manualBtn">NASA MANUAL &amp; RESOURCES</span>
+
+      </button>
+
+      <button class="pixel-btn" id="btnSettings" data-i18n="settings">SETTINGS</button>
+
+    </nav>
+
+
+
+    <!-- شريط تحميل الأصول — يظهر فوق خلفية القائمة الحية
+
+         حتى اكتمال كل الصور والفيديوهات، ولا يحجبها إطلاقاً -->
+
+    <div class="preload-hud" id="preloadHud" role="status" aria-live="polite">
+
+      <span class="preload-label" id="preloadLabel">LOADING GAME ASSETS… 0%</span>
+
+      <span class="preload-bar"><i class="preload-fill" id="preloadFill"></i></span>
+
+    </div>
+
+
+
+  </main>
+
+
+
+  <!-- نافذة الإعدادات المنبثقة -->
+
+  <div class="modal-overlay hidden" id="settingsModal" role="dialog" aria-modal="true">
+
+    <div class="modal-box">
+
+      <h2 class="modal-title" data-i18n="settingsTitle">SETTINGS</h2>
+
+
+
+      <div class="setting-row">
+
+        <label for="volumeSlider" data-i18n="volume">VOLUME</label>
+
+        <input type="range" id="volumeSlider" min="0" max="100" value="70" step="1" />
+
+        <span class="volume-value" id="volumeValue">70</span>
+
+      </div>
+
+
+
+      <div class="setting-row">
+
+        <span data-i18n="language">LANGUAGE</span>
+
+        <button class="pixel-btn small" id="btnLangSettings" data-lang-label></button>
+
+      </div>
+
+
+
+      <!-- ملء الشاشة — داخل تبويب الإعدادات نفسه -->
+
+      <div class="setting-row">
+
+        <span data-i18n="fullscreen">FULLSCREEN</span>
+
+        <button class="pixel-btn small" id="btnFullscreenSettings" data-i18n="fullscreen">FULLSCREEN</button>
+
+      </div>
+
+
+
+      <!-- الملفات المصاحبة : الكوميك ثلاثي الأبعاد (حسب لغة اللعبة) + الملف العلمي التفصيلي -->
+
+      <div class="setting-row files-row">
+
+        <span data-i18n="files">FILES</span>
+
+        <div class="files-btns">
+
+          <button class="pixel-btn small" id="btnComic" data-i18n="comicBtn">3D COMIC BOOK</button>
+
+          <button class="pixel-btn small" id="btnArchive" data-i18n="archiveBtn">THE SILENT ARCHIVE (PDF)</button>
+
+        </div>
+
+      </div>
+
+
+
+      <button class="pixel-btn small close-btn" id="btnCloseSettings" data-i18n="close">CLOSE</button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ============================================
+
+       المشهد 1: شاشة السجل التاريخي (مضمّن في نفس الصفحة)
+
+       الشاشة تعمل داخل الصفحة حتى يعمل الصوت تلقائياً
+
+       ============================================ -->
+
+  <div class="scene-host hidden-scene" id="sceneHost">
+
+    <div class="crt" id="crt">
+
+      <div class="scanlines"></div>
+
+      <div class="scan-band"></div>
+
+      <div class="flicker"></div>
+
+      <div class="vignette"></div>
+
+
+
+      <div class="term" id="terminal" aria-live="polite"></div>
+
+
+
+      <div class="audio-hint" id="audioHint"></div>
+
+
+
+      <div class="scene-tag" id="sceneTag"></div>
+
+    </div>
+
+
+
+    <div class="crt-off-overlay" id="crtOff"></div>
+
+  </div>
+
+  <!-- ============ نهاية المشهد 1 ============ -->
+
+
+
+  <!-- المشهد 2: مرحلة المشي (مضمّن) -->
+
+  <div class="scene-host hidden-scene" id="sceneHost2">
+
+    <canvas id="scene2Canvas"></canvas>
+
+  </div>
+
+  <!-- ============ نهاية المشهد 2 ============ -->
+
+
+
+  <script src="js/assets.js"></script>
+
+  <script src="js/preload.js"></script>
+
+  <script src="js/i18n.js"></script>
+
+  <script src="js/manual.js"></script>
+
+  <script src="js/main.js"></script>
+
+  <script src="js/scene1.js"></script>
+
+  <script src="js/scene2.js"></script>
+
+</body>
+
+</html>

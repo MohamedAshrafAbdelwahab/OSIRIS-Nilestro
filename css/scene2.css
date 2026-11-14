@@ -1,0 +1,5725 @@
+/* =========================================================
+
+   Scene 2 — Gameplay stage (Zien walk)
+
+   ========================================================= */
+
+
+
+html, body {
+
+  margin: 0;
+
+  padding: 0;
+
+  width: 100%;
+
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #000;
+
+  font-family: 'Press Start 2P', monospace;
+
+}
+
+
+
+#scene2Canvas {
+
+  display: block;
+
+  width: 100vw;
+
+  height: 100vh;
+
+  cursor: default;
+
+}
+
+
+
+/* ================== لوحة الإرشادات ================== */
+
+.instructions-panel {
+
+  position: fixed;
+
+  top: 50%;
+
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+
+
+  z-index: 10;
+
+  pointer-events: none;
+
+
+
+  width: min(90vw, 620px);
+
+  padding: clamp(20px, 3.2vw, 34px) clamp(22px, 4vw, 44px);
+
+
+
+  text-align: center;
+
+  color: #dcecf7;
+
+  font-family: 'Handjet', 'Press Start 2P', sans-serif;
+
+  font-weight: 700;
+
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+
+  line-height: 1.75;
+
+
+
+  background: linear-gradient(180deg, rgba(8, 18, 30, 0.90), rgba(3, 8, 16, 0.94));
+
+  border: 1px solid rgba(57, 255, 90, 0.35);
+
+  border-radius: 16px;
+
+  box-shadow:
+
+    0 0 0 1px rgba(0, 0, 0, 0.65),
+
+    inset 0 0 40px rgba(57, 255, 90, 0.05),
+
+    0 0 34px rgba(57, 255, 90, 0.14),
+
+    0 26px 60px rgba(0, 0, 0, 0.60);
+
+  backdrop-filter: blur(6px);
+
+  -webkit-backdrop-filter: blur(6px);
+
+
+
+  opacity: 1;
+
+  transition: opacity 0.7s ease, transform 0.7s ease;
+
+}
+
+
+
+.instructions-panel.hidden {
+
+  opacity: 0;
+
+  transform: translate(-50%, -46%);
+
+  pointer-events: none;
+
+}
+
+
+
+.instructions-panel h2 {
+
+  margin: 0 0 16px;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+
+  letter-spacing: 0.01em;
+
+  color: #39ff5a;
+
+  text-shadow: 0 0 14px rgba(57, 255, 90, 0.55);
+
+}
+
+
+
+.instructions-panel p {
+
+  margin: 10px 0;
+
+  white-space: normal;
+
+}
+
+
+
+.instructions-panel .panel-start {
+
+  margin-top: 20px;
+
+  font-size: 0.72em;
+
+  letter-spacing: 0.22em;
+
+  color: #7fe08f;
+
+  opacity: 0.75;
+
+  animation: panel-pulse 2.2s ease-in-out infinite;
+
+}
+
+
+
+@keyframes panel-pulse {
+
+  0%, 100% { opacity: 0.35; }
+
+  50%      { opacity: 0.95; }
+
+}
+
+
+
+/* أزرار الكيبورد داخل اللوحة */
+
+.instructions-panel kbd {
+
+  display: inline-block;
+
+  min-width: 1.5em;
+
+  margin: 0 3px;
+
+  padding: 3px 8px;
+
+  border: 1px solid rgba(57, 255, 90, 0.6);
+
+  border-radius: 6px;
+
+  background: rgba(57, 255, 90, 0.08);
+
+  color: #8dff9d;
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.62em;
+
+  line-height: 1.6;
+
+  vertical-align: middle;
+
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.45);
+
+  text-shadow: none;
+
+}
+
+
+
+/* النسخة الإنجليزية */
+
+.instructions-panel.lang-en {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.6rem, 1.05vw, 0.8rem);
+
+  line-height: 2.1;
+
+  letter-spacing: 0.04em;
+
+}
+
+
+
+.instructions-panel.lang-en h2 {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.85rem, 1.5vw, 1.15rem);
+
+  letter-spacing: 0.06em;
+
+}
+
+
+
+/* ================== رسالة التفاعل (E) ================== */
+
+.scene2-toast {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 9vh;
+
+  transform: translate(-50%, 12px);
+
+
+
+  z-index: 11;
+
+  pointer-events: none;
+
+
+
+  padding: 10px 22px;
+
+  border: 1px solid rgba(57, 255, 90, 0.4);
+
+  border-radius: 999px;
+
+  background: rgba(4, 12, 10, 0.88);
+
+  color: #b6ffc2;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: 1.15rem;
+
+  text-align: center;
+
+  white-space: nowrap;
+
+
+
+  opacity: 0;
+
+  transition: opacity 0.35s ease, transform 0.35s ease;
+
+}
+
+
+
+.scene2-toast.show {
+
+  opacity: 1;
+
+  transform: translate(-50%, 0);
+
+}
+
+
+
+@media (max-width: 600px) {
+
+  .scene2-toast { font-size: 0.95rem; white-space: normal; width: 84vw; }
+
+}
+
+
+
+/* ================== زر الترس (الإعدادات) ================== */
+
+.gear-btn {
+
+  position: fixed;
+
+  top: 14px;
+
+  left: 14px;
+
+  z-index: 12;
+
+
+
+  width: 48px;
+
+  height: 48px;
+
+  padding: 0;
+
+
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3px;
+
+
+
+  color: #8dff9d;
+
+  background: rgba(4, 12, 10, 0.85);
+
+  border: 1px solid rgba(57, 255, 90, 0.4);
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+
+
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+
+}
+
+
+
+.gear-btn svg {
+
+  width: 22px;
+
+  height: 22px;
+
+  fill: currentColor;
+
+}
+
+
+
+.gear-btn:hover,
+
+.gear-btn:focus-visible {
+
+  border-color: rgba(57, 255, 90, 0.95);
+
+  box-shadow: 0 0 16px rgba(57, 255, 90, 0.30);
+
+  transform: rotate(30deg) scale(1.05);
+
+  outline: none;
+
+}
+
+
+
+.gear-btn .kbd-mini {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 5px;
+
+  letter-spacing: 0.12em;
+
+  color: #6dd07d;
+
+  opacity: 0.85;
+
+}
+
+
+
+/* —— زر الدليل (دليل المهمة ومصادر ناسا) — بجوار الترس بلون ذهبي —— */
+
+.manual-btn {
+
+  position: fixed;
+
+  top: 14px;
+
+  left: 72px;               /* بجوار الترس (48 + 10) */
+
+  z-index: 12;
+
+  width: 48px;
+
+  height: 48px;
+
+  padding: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3px;
+
+  color: #ffd76a;
+
+  background: rgba(20, 14, 4, 0.85);
+
+  border: 1px solid rgba(255, 215, 106, 0.4);
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+
+}
+
+.manual-btn svg {
+
+  width: 22px;
+
+  height: 22px;
+
+  fill: currentColor;
+
+}
+
+.manual-btn:hover,
+
+.manual-btn:focus-visible {
+
+  border-color: rgba(255, 215, 106, 0.95);
+
+  box-shadow: 0 0 16px rgba(255, 215, 106, 0.30);
+
+  transform: translateY(-2px) scale(1.05);
+
+  outline: none;
+
+}
+
+.manual-btn .kbd-mini {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 5px;
+
+  letter-spacing: 0.12em;
+
+  color: #ffd76a;
+
+  opacity: 0.85;
+
+}
+
+
+
+/* ================== نافذة إعدادات اللعب ================== */
+
+.s2-modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 40;
+
+  background: rgba(2, 6, 12, 0.72);
+
+  backdrop-filter: blur(4px);
+
+  -webkit-backdrop-filter: blur(4px);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+}
+
+
+
+.s2-modal-overlay.hidden { display: none; }
+
+
+
+.s2-modal {
+
+  width: min(90vw, 420px);
+
+  padding: 26px 28px;
+
+
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+
+
+  color: #dcecf7;
+
+  font-family: 'Handjet', 'Press Start 2P', sans-serif;
+
+  font-weight: 700;
+
+  font-size: 1.15rem;
+
+
+
+  background: linear-gradient(180deg, rgba(8, 18, 30, 0.94), rgba(3, 8, 16, 0.97));
+
+  border: 1px solid rgba(57, 255, 90, 0.35);
+
+  border-radius: 16px;
+
+  box-shadow:
+
+    0 0 0 1px rgba(0, 0, 0, 0.65),
+
+    0 0 30px rgba(57, 255, 90, 0.12),
+
+    0 24px 60px rgba(0, 0, 0, 0.6);
+
+}
+
+
+
+.s2-modal .s2-title {
+
+  margin: 0;
+
+  text-align: center;
+
+  color: #39ff5a;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: 1.7rem;
+
+  text-shadow: 0 0 12px rgba(57, 255, 90, 0.5);
+
+}
+
+
+
+.s2-modal .s2-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+}
+
+
+
+.s2-modal .s2-row > span { flex: 1; }
+
+
+
+.s2-modal input[type="range"] {
+
+  -webkit-appearance: none;
+
+  appearance: none;
+
+  flex: 1.2;
+
+  height: 12px;
+
+  background: #0c1540;
+
+  border: 2px solid #0c1c4e;
+
+  outline: none;
+
+  cursor: pointer;
+
+}
+
+
+
+.s2-modal input[type="range"]::-webkit-slider-thumb {
+
+  -webkit-appearance: none;
+
+  width: 15px;
+
+  height: 24px;
+
+  background: #2f66f0;
+
+  border: 2px solid #0c1c4e;
+
+  box-shadow: inset -3px -3px 0 #16307e, inset 3px 3px 0 rgba(255,255,255,0.3);
+
+  cursor: pointer;
+
+}
+
+
+
+.s2-modal input[type="range"]::-moz-range-thumb {
+
+  width: 15px;
+
+  height: 24px;
+
+  background: #2f66f0;
+
+  border: 2px solid #0c1c4e;
+
+  border-radius: 0;
+
+  cursor: pointer;
+
+}
+
+
+
+.s2-modal .s2-volume-value {
+
+  flex: none;
+
+  min-width: 3ch;
+
+  text-align: center;
+
+  color: #9fd0ff;
+
+}
+
+
+
+.s2-btn {
+
+  font-family: 'Handjet', 'Press Start 2P', sans-serif;
+
+  font-weight: 700;
+
+  font-size: 1.05rem;
+
+  color: #eaf4ff;
+
+  background: rgba(36, 86, 216, 0.35);
+
+  border: 1px solid rgba(57, 255, 90, 0.35);
+
+  border-radius: 10px;
+
+  padding: 8px 16px;
+
+  cursor: pointer;
+
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+}
+
+
+
+.s2-btn:hover { background: rgba(36, 86, 216, 0.55); border-color: rgba(57, 255, 90, 0.7); }
+
+
+
+.s2-btn.primary {
+
+  align-self: center;
+
+  min-width: 130px;
+
+  background: rgba(57, 255, 90, 0.12);
+
+  color: #8dff9d;
+
+}
+
+
+
+.s2-btn.primary:hover { background: rgba(57, 255, 90, 0.22); }
+
+
+
+/* زر العودة للقائمة الرئيسية */
+
+.s2-modal .s2-menu-btn {
+
+  align-self: center;
+
+  min-width: 200px;
+
+  background: rgba(216, 88, 66, 0.16);
+
+  border-color: rgba(255, 150, 120, 0.45);
+
+  color: #ffb48f;
+
+}
+
+
+
+.s2-modal .s2-menu-btn:hover {
+
+  background: rgba(216, 88, 66, 0.32);
+
+  border-color: rgba(255, 170, 140, 0.75);
+
+}
+
+
+
+/* زر الدليل داخل إعدادات اللعب — ذهبي مميز */
+
+.s2-modal .s2-manual-btn {
+
+  align-self: center;
+
+  min-width: 200px;
+
+  background: rgba(255, 215, 106, 0.10);
+
+  border-color: rgba(255, 215, 106, 0.45);
+
+  color: #ffd76a;
+
+}
+
+.s2-modal .s2-manual-btn:hover {
+
+  background: rgba(255, 215, 106, 0.22);
+
+  border-color: rgba(255, 215, 106, 0.8);
+
+}
+
+
+
+/* ================== الحوار ================== */
+
+.dialogue-panel {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: calc(3vh + 26px);
+
+  transform: translateX(-50%);
+
+
+
+  z-index: 64;
+
+  pointer-events: none;
+
+
+
+  width: min(92vw, 720px);
+
+  padding: 16px 22px 14px;
+
+
+
+  border: 1px solid rgba(57, 255, 90, 0.4);
+
+  border-radius: 14px;
+
+  background: linear-gradient(180deg, rgba(8, 18, 30, 0.93), rgba(3, 8, 16, 0.96));
+
+  box-shadow:
+
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+
+    0 0 26px rgba(57, 255, 90, 0.12),
+
+    0 18px 44px rgba(0, 0, 0, 0.55);
+
+  backdrop-filter: blur(6px);
+
+  -webkit-backdrop-filter: blur(6px);
+
+
+
+  color: #eaf4ff;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: clamp(1.1rem, 2.1vw, 1.45rem);
+
+  line-height: 1.7;
+
+  text-align: right;
+
+
+
+  animation: dialogue-in 0.30s ease-out both;
+
+}
+
+
+
+@keyframes dialogue-in {
+
+  from { opacity: 0; transform: translateX(-50%) translateY(14px); }
+
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+}
+
+
+
+.dialogue-panel.hidden {
+
+  animation: none;
+
+  opacity: 0;
+
+  transition: opacity 0.45s ease;
+
+}
+
+
+
+.dialogue-name {
+
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  padding: 2px 16px 4px;
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(57, 255, 90, 0.45);
+
+  background: rgba(57, 255, 90, 0.10);
+
+  color: #8dff9d;
+
+  font-size: 0.95em;
+
+}
+
+
+
+/* شارة المتحدث — لون خاص لكل شخصية */
+
+.dialogue-name.speaker-zain {
+
+  color: #8dff9d;
+
+  border-color: rgba(57, 255, 90, 0.45);
+
+  background: rgba(57, 255, 90, 0.10);
+
+}
+
+
+
+.dialogue-name.speaker-tariq {
+
+  color: #ffd29d;
+
+  border-color: rgba(255, 170, 80, 0.50);
+
+  background: rgba(255, 160, 60, 0.12);
+
+}
+
+
+
+.dialogue-name.speaker-sohail {
+
+  color: #9ddcff;
+
+  border-color: rgba(90, 190, 255, 0.55);
+
+  background: rgba(70, 160, 255, 0.12);
+
+  text-shadow: 0 0 8px rgba(90, 190, 255, 0.45);
+
+}
+
+
+
+/* فريق NileStro (خلف الكواليس): لون لكل عضو */
+
+.dialogue-name.speaker-malak {
+
+  color: #a8e6b0;
+
+  border-color: rgba(120, 220, 150, 0.50);
+
+  background: rgba(110, 210, 150, 0.12);
+
+}
+
+
+
+.dialogue-name.speaker-ranya {
+
+  color: #f0a89a;
+
+  border-color: rgba(230, 140, 120, 0.50);
+
+  background: rgba(225, 130, 110, 0.12);
+
+}
+
+
+
+.dialogue-name.speaker-mazen {
+
+  color: #b9c8ff;
+
+  border-color: rgba(140, 165, 255, 0.55);
+
+  background: rgba(120, 145, 255, 0.12);
+
+}
+
+
+
+.dialogue-name.speaker-mohamed {
+
+  color: #ffe08f;
+
+  border-color: rgba(255, 205, 100, 0.55);
+
+  background: rgba(255, 190, 80, 0.12);
+
+}
+
+
+
+.dialogue-text {
+
+  white-space: pre-wrap;
+
+  word-break: break-word;
+
+}
+
+
+
+.dialogue-next {
+
+  margin-top: 8px;
+
+  text-align: center;
+
+  color: #7fe08f;
+
+  font-size: 0.85em;
+
+  animation: next-blink 1.1s steps(2) infinite;
+
+}
+
+
+
+@keyframes next-blink {
+
+  0%, 49%  { opacity: 1; }
+
+  50%, 100% { opacity: 0.15; }
+
+}
+
+
+
+/* النسخة الإنجليزية للحوار */
+
+.dialogue-panel.lang-en {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.62rem, 1.15vw, 0.85rem);
+
+  line-height: 2;
+
+  letter-spacing: 0.03em;
+
+  text-align: left;
+
+}
+
+
+
+/* ================== سهم الخروج (يسار) ================== */
+
+.exit-hint {
+
+  position: fixed;
+
+  left: 26px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+
+
+  z-index: 12;
+
+  pointer-events: none;
+
+
+
+  color: #8dff9d;
+
+  filter: drop-shadow(0 0 10px rgba(57, 255, 90, 0.55));
+
+  opacity: 0.9;
+
+}
+
+
+
+.exit-hint .arrow {
+
+  display: inline-block;
+
+  font-size: 44px;
+
+  animation: exit-slide 1.25s ease-in-out infinite;
+
+}
+
+
+
+@keyframes exit-slide {
+
+  0%, 100% { transform: translateX(0);     opacity: 0.45; }
+
+  50%      { transform: translateX(-16px); opacity: 1; }
+
+}
+
+
+
+/* سهم الخروج من جهة اليمين (الغرفة التالية) */
+
+.exit-hint.exit-right {
+
+  left: auto;
+
+  right: 26px;
+
+}
+
+
+
+.exit-hint.exit-right .arrow {
+
+  animation: exit-slide-right 1.25s ease-in-out infinite;
+
+}
+
+
+
+@keyframes exit-slide-right {
+
+  0%, 100% { transform: translateX(0);    opacity: 0.45; }
+
+  50%      { transform: translateX(16px); opacity: 1; }
+
+}
+
+
+
+.exit-hint.hidden { opacity: 0; }
+
+
+
+.exit-hint.hidden .arrow { animation: none; }
+
+
+
+/* ================== تعتيم انتقال الغرف ================== */
+
+.room-fade {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 20;
+
+  background: #000;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: opacity 0.6s ease;
+
+}
+
+
+
+.room-fade.on { opacity: 1; }
+
+
+
+/* ================== اهتزاز الشاشة عند اصطدام النيازك ================== */
+
+@keyframes host-shake {
+
+  0%, 100% { transform: translate(0, 0); }
+
+  10%      { transform: translate(-14px, 9px); }
+
+  20%      { transform: translate(12px, -8px); }
+
+  30%      { transform: translate(-10px, -12px); }
+
+  40%      { transform: translate(9px, 10px); }
+
+  50%      { transform: translate(-12px, 6px); }
+
+  60%      { transform: translate(10px, -9px); }
+
+  70%      { transform: translate(-8px, 12px); }
+
+  80%      { transform: translate(7px, -7px); }
+
+  90%      { transform: translate(-9px, 4px); }
+
+}
+
+
+
+.scene-host.screen-shake,
+
+body.screen-shake {
+
+  animation: host-shake 0.4s linear infinite;
+
+}
+
+
+
+/* ================== الشاشة التحذيرية الحمراء الوامضة ================== */
+
+.impact-warn {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 26;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 0 6vw;
+
+
+
+  background:
+
+    radial-gradient(ellipse at center,
+
+      rgba(255, 30, 30, 0.10) 30%,
+
+      rgba(120, 0, 0, 0.42) 85%,
+
+      rgba(40, 0, 0, 0.72) 100%),
+
+    rgba(88, 0, 0, 0.26);
+
+
+
+  color: #ff6b6b;
+
+  font-family: 'Handjet', 'Press Start 2P', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+
+  line-height: 1.6;
+
+  text-shadow:
+
+    0 0 18px rgba(255, 40, 40, 0.75),
+
+    0 0 46px rgba(255, 60, 60, 0.35);
+
+
+
+  animation: warn-blink 0.55s steps(2) infinite;
+
+}
+
+
+
+/* إنذار تجمّد الليزر (المشهد 4): وميض أزرق جليدي بدل الأحمر النيزكي */
+
+.impact-warn.laser-warn {
+
+  background:
+
+    radial-gradient(ellipse at center,
+
+      rgba(80, 190, 255, 0.10) 30%,
+
+      rgba(8, 60, 110, 0.46) 85%,
+
+      rgba(2, 24, 48, 0.74) 100%),
+
+    rgba(6, 34, 66, 0.30);
+
+  color: #9ddcff;
+
+  text-shadow:
+
+    0 0 18px rgba(90, 200, 255, 0.8),
+
+    0 0 46px rgba(60, 160, 255, 0.4);
+
+}
+
+
+
+.impact-warn.lang-en {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.7rem, 1.6vw, 1.15rem);
+
+  line-height: 2.1;
+
+  letter-spacing: 0.05em;
+
+}
+
+
+
+@keyframes warn-blink {
+
+  0%, 49%  { opacity: 1; }
+
+  50%, 100% { opacity: 0.25; }
+
+}
+
+
+
+/* ================== لافتة المهمة العاجلة ================== */
+
+.mission-banner {
+
+  position: fixed;
+
+  top: 18px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+
+
+  z-index: 13;
+
+  pointer-events: none;
+
+
+
+  padding: 12px 26px;
+
+  border: 1px solid rgba(255, 90, 70, 0.65);
+
+  border-radius: 12px;
+
+  background: linear-gradient(180deg, rgba(44, 10, 10, 0.92), rgba(20, 4, 4, 0.95));
+
+  box-shadow:
+
+    0 0 24px rgba(255, 70, 60, 0.25),
+
+    0 12px 30px rgba(0, 0, 0, 0.5);
+
+
+
+  color: #ff9d8f;
+
+  font-family: 'Handjet', 'Press Start 2P', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+
+  letter-spacing: 0.02em;
+
+  text-align: center;
+
+  white-space: nowrap;
+
+
+
+  animation:
+
+    mission-in 0.4s ease-out both,
+
+    mission-pulse 1.4s ease-in-out 0.4s infinite;
+
+}
+
+
+
+.mission-banner.lang-en {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+
+  letter-spacing: 0.05em;
+
+}
+
+
+
+@keyframes mission-in {
+
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+}
+
+
+
+@keyframes mission-pulse {
+
+  0%, 100% { box-shadow: 0 0 16px rgba(255, 70, 60, 0.16); border-color: rgba(255, 90, 70, 0.45); }
+
+  50%      { box-shadow: 0 0 34px rgba(255, 70, 60, 0.45); border-color: rgba(255, 90, 70, 0.95); }
+
+}
+
+
+
+@media (max-width: 600px) {
+
+  .mission-banner { white-space: normal; width: 86vw; font-size: 1.1rem; }
+
+}
+
+
+
+/* ================== فيديو سينمائي ملء الشاشة (4.mp4 / 5.mp4) ================== */
+
+.cutscene-video {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 60;
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  background: #000;
+
+}
+
+
+
+/* ================== الخاتمة — شاشة سوداء + نص أبيض ناعم ================== */
+
+.epilogue-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 70;
+
+  background: #000;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  padding: 0 8vw;
+
+  opacity: 0;
+
+  transition: opacity 1.4s ease;
+
+}
+
+
+
+.epilogue-overlay.show { opacity: 1; }
+
+
+
+.epilogue-text {
+
+  color: #fff;
+
+  text-align: center;
+
+  white-space: pre-wrap;
+
+
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+
+  line-height: 1.75;
+
+
+
+  text-shadow:
+
+    0 0 10px rgba(255, 255, 255, 0.45),
+
+    0 0 30px rgba(255, 255, 255, 0.18);
+
+
+
+  opacity: 0;
+
+  transition: opacity 1.6s ease;
+
+}
+
+
+
+.epilogue-overlay.lang-en .epilogue-text {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.62rem, 1.1vw, 0.95rem);
+
+  line-height: 2.1;
+
+  letter-spacing: 0.06em;
+
+}
+
+
+
+.epilogue-text.show { opacity: 1; }
+
+
+
+/* ================== لافتة الفصل الأول ================== */
+
+.chapter-card {
+
+  color: #fff;
+
+  text-align: center;
+
+
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(2rem, 4vw, 3.4rem);
+
+  letter-spacing: 0.02em;
+
+
+
+  text-shadow:
+
+    0 0 12px rgba(255, 255, 255, 0.5),
+
+    0 0 40px rgba(255, 255, 255, 0.2);
+
+
+
+  opacity: 0;
+
+  transition: opacity 1.8s ease;
+
+}
+
+
+
+.epilogue-overlay.lang-en .chapter-card {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.9rem, 1.6vw, 1.5rem);
+
+  line-height: 1.9;
+
+}
+
+
+
+.chapter-card.show { opacity: 1; }
+
+
+
+/* مطالبة العودة للقائمة بعد لافتة الفصل */
+
+.chapter-card.chapter-prompt {
+
+  position: absolute;
+
+  bottom: 6vh;
+
+  left: 0;
+
+  right: 0;
+
+
+
+  color: rgba(255, 255, 255, 0.75);
+
+  font-weight: 700;
+
+  font-size: clamp(0.9rem, 1.4vw, 1.3rem);
+
+  text-shadow: none;
+
+}
+
+
+
+.epilogue-overlay.lang-en .chapter-card.chapter-prompt {
+
+  font-size: clamp(0.45rem, 0.7vw, 0.6rem);
+
+}
+
+
+
+/* سطر السرد في الحوار — يظهر بدون اسم متحدث */
+
+.dialogue-name.speaker-narrator { display: none; }
+
+
+
+/* ================== الفصل الأول — طبقة سوداء انتقالية ================== */
+
+.chapter-black {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 80;
+
+  background: #000;
+
+  opacity: 0;
+
+  transition: opacity 0.55s ease;
+
+  pointer-events: none;
+
+}
+
+
+
+.chapter-black.on { opacity: 1; }
+
+
+
+/* ================== شارة «اضغط E» فوق الفريم الثابت ================== */
+
+.chapter-e-badge {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 11vh;
+
+  transform: translateX(-50%);
+
+  z-index: 82;
+
+
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 12px 24px;
+
+
+
+  color: #d8ffe0;
+
+  background: rgba(3, 12, 9, 0.88);
+
+  border: 1px solid rgba(57, 255, 90, 0.55);
+
+  border-radius: 12px;
+
+  box-shadow:
+
+    0 0 22px rgba(57, 255, 90, 0.22),
+
+    0 14px 34px rgba(0, 0, 0, 0.55);
+
+  cursor: pointer;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: 1.5rem;
+
+  letter-spacing: 0.02em;
+
+
+
+  animation: chapter-e-pulse 1.6s ease-in-out infinite;
+
+}
+
+
+
+.chapter-e-badge .ce-key {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 40px;
+
+  height: 40px;
+
+  padding: 0 10px;
+
+
+
+  border: 1px solid rgba(57, 255, 90, 0.75);
+
+  border-radius: 8px;
+
+  background: rgba(57, 255, 90, 0.10);
+
+  color: #8dff9d;
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 15px;
+
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.5);
+
+}
+
+
+
+.chapter-e-badge.lang-en {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: 0.72rem;
+
+  letter-spacing: 0.08em;
+
+}
+
+
+
+.chapter-e-badge.lang-en .ce-key { font-size: 12px; }
+
+
+
+@keyframes chapter-e-pulse {
+
+  0%, 100% { box-shadow: 0 0 14px rgba(57, 255, 90, 0.15), 0 14px 34px rgba(0, 0, 0, 0.55); }
+
+  50%      { box-shadow: 0 0 30px rgba(57, 255, 90, 0.40), 0 14px 34px rgba(0, 0, 0, 0.55); }
+
+}
+
+
+
+/* ================== بطاقة لوحة الذكريات ================== */
+
+.plaque-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 46;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  background: rgba(2, 8, 14, 0.42);
+
+  opacity: 0;
+
+  transition: opacity 0.45s ease;
+
+  pointer-events: none;
+
+}
+
+
+
+.plaque-overlay.show { opacity: 1; }
+
+
+
+.plaque-card {
+
+  width: min(88vw, 560px);
+
+  padding: 34px 30px 30px;
+
+  text-align: center;
+
+  color: #dcecf7;
+
+  background: linear-gradient(180deg, rgba(10, 26, 44, 0.94), rgba(4, 12, 24, 0.97));
+
+  border: 1px solid rgba(120, 220, 255, 0.5);
+
+  border-radius: 16px;
+
+  box-shadow:
+
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+
+    0 0 34px rgba(90, 190, 255, 0.25),
+
+    0 26px 60px rgba(0, 0, 0, 0.6),
+
+    inset 0 0 44px rgba(90, 190, 255, 0.06);
+
+  transform: translateY(14px) scale(0.97);
+
+  transition: transform 0.45s ease;
+
+}
+
+
+
+.plaque-overlay.show .plaque-card { transform: translateY(0) scale(1); }
+
+
+
+.plaque-card .plaque-eyebrow {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.5rem, 0.9vw, 0.68rem);
+
+  letter-spacing: 0.14em;
+
+  color: #9ddcff;
+
+  opacity: 0.9;
+
+  margin-bottom: 10px;
+
+}
+
+
+
+.plaque-card .plaque-eyebrow-ar {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+
+  color: #9ddcff;
+
+  opacity: 0.85;
+
+  margin-bottom: 20px;
+
+}
+
+
+
+.plaque-card .plaque-ar {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+
+  color: #fff;
+
+  text-shadow: 0 0 16px rgba(140, 220, 255, 0.45);
+
+  margin-bottom: 14px;
+
+}
+
+
+
+.plaque-card .plaque-en {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.5rem, 1vw, 0.75rem);
+
+  letter-spacing: 0.08em;
+
+  color: #b7e6ff;
+
+  line-height: 2;
+
+}
+
+
+
+/* ================== هولوجرام فحص صمام الأكسجين ================== */
+
+.holo-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 44;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  background: rgba(2, 8, 16, 0.55);
+
+  backdrop-filter: blur(3px);
+
+  -webkit-backdrop-filter: blur(3px);
+
+  animation: holo-in 0.35s ease-out both;
+
+}
+
+
+
+@keyframes holo-in {
+
+  from { opacity: 0; }
+
+  to   { opacity: 1; }
+
+}
+
+
+
+.holo-panel {
+
+  position: relative;
+
+  overflow: hidden;
+
+
+
+  width: min(92vw, 640px);
+
+  padding: 24px 28px 20px;
+
+
+
+  color: #bfeaff;
+
+  background: linear-gradient(180deg, rgba(8, 30, 48, 0.88), rgba(3, 12, 24, 0.92));
+
+  border: 1px solid rgba(90, 190, 255, 0.55);
+
+  border-radius: 16px;
+
+  box-shadow:
+
+    0 0 34px rgba(80, 180, 255, 0.22),
+
+    0 24px 60px rgba(0, 0, 0, 0.6),
+
+    inset 0 0 40px rgba(80, 180, 255, 0.06);
+
+
+
+  font-family: 'Handjet', 'Press Start 2P', sans-serif;
+
+  font-weight: 700;
+
+}
+
+
+
+.holo-panel::after {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background: repeating-linear-gradient(0deg, rgba(120, 220, 255, 0.05) 0 1px, transparent 1px 4px);
+
+}
+
+
+
+.holo-head {
+
+  display: flex;
+
+  align-items: baseline;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 4px;
+
+}
+
+
+
+.holo-title {
+
+  font-weight: 900;
+
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+
+  color: #8fdcff;
+
+  text-shadow: 0 0 12px rgba(90, 190, 255, 0.5);
+
+}
+
+
+
+.holo-overlay.lang-en .holo-title {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.62rem, 1.1vw, 0.9rem);
+
+  letter-spacing: 0.06em;
+
+}
+
+
+
+.holo-sub {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.4rem, 0.7vw, 0.55rem);
+
+  letter-spacing: 0.12em;
+
+  color: rgba(160, 220, 255, 0.55);
+
+}
+
+
+
+.holo-body {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: clamp(18px, 4vw, 44px);
+
+  padding: 10px 0 4px;
+
+}
+
+
+
+.holo-gauge-wrap {
+
+  position: relative;
+
+  width: min(46vw, 250px);
+
+}
+
+
+
+.holo-gauge { width: 100%; height: auto; display: block; }
+
+
+
+.gauge-arc-bg {
+
+  fill: none;
+
+  stroke: rgba(120, 210, 255, 0.18);
+
+  stroke-width: 12;
+
+  stroke-linecap: round;
+
+}
+
+
+
+.gauge-arc-danger {
+
+  fill: none;
+
+  stroke: rgba(255, 70, 70, 0.75);
+
+  stroke-width: 12;
+
+  stroke-linecap: round;
+
+  filter: drop-shadow(0 0 6px rgba(255, 60, 60, 0.5));
+
+}
+
+
+
+.gauge-arc-safe {
+
+  fill: none;
+
+  stroke: rgba(60, 230, 120, 0.7);
+
+  stroke-width: 12;
+
+  stroke-linecap: round;
+
+  filter: drop-shadow(0 0 6px rgba(60, 230, 120, 0.45));
+
+}
+
+
+
+.gauge-tick { stroke: rgba(160, 220, 255, 0.5); stroke-width: 2; }
+
+
+
+.gauge-needle {
+
+  stroke: #eaffff;
+
+  stroke-width: 3.5;
+
+  stroke-linecap: round;
+
+  filter: drop-shadow(0 0 6px rgba(140, 230, 255, 0.8));
+
+  transition: transform 0.08s linear;
+
+}
+
+
+
+.gauge-hub { fill: #0a1826; stroke: rgba(160, 230, 255, 0.8); stroke-width: 2; }
+
+.gauge-target { fill: rgba(180, 250, 255, 0.9); }
+
+
+
+.holo-readout {
+
+  position: absolute;
+
+  left: 50%;
+
+  bottom: -6px;
+
+  transform: translateX(-50%);
+
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 6px;
+
+  font-family: 'Press Start 2P', monospace;
+
+  white-space: nowrap;
+
+}
+
+
+
+.holo-readout span {
+
+  font-size: clamp(1rem, 2vw, 1.5rem);
+
+  color: #fff;
+
+  text-shadow: 0 0 10px rgba(140, 230, 255, 0.7);
+
+}
+
+
+
+.holo-readout i {
+
+  font-style: normal;
+
+  font-size: clamp(0.42rem, 0.8vw, 0.58rem);
+
+  color: rgba(170, 225, 255, 0.7);
+
+  letter-spacing: 0.1em;
+
+}
+
+
+
+.holo-wheel-zone {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 14px;
+
+}
+
+
+
+.holo-wheel {
+
+  width: clamp(110px, 16vw, 150px);
+
+  height: clamp(110px, 16vw, 150px);
+
+  border-radius: 50%;
+
+  cursor: grab;
+
+  touch-action: none;
+
+
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  background: radial-gradient(circle at 50% 50%, rgba(90, 190, 255, 0.10), rgba(10, 24, 40, 0.9) 70%);
+
+  border: 2px solid rgba(90, 190, 255, 0.6);
+
+  box-shadow: 0 0 20px rgba(80, 180, 255, 0.25), inset 0 0 24px rgba(80, 180, 255, 0.08);
+
+}
+
+
+
+.holo-wheel:active { cursor: grabbing; }
+
+
+
+.holo-wheel.locked {
+
+  border-color: rgba(70, 240, 140, 0.8);
+
+  box-shadow: 0 0 26px rgba(70, 240, 140, 0.35);
+
+  cursor: default;
+
+}
+
+
+
+.wheel-face {
+
+  display: block;
+
+  position: relative;
+
+  width: 72%;
+
+  height: 72%;
+
+  border-radius: 50%;
+
+  border: 2px dashed rgba(140, 220, 255, 0.55);
+
+  background:
+
+    radial-gradient(circle at 50% 50%, rgba(140, 220, 255, 0.10) 0 26%, transparent 27%),
+
+    repeating-conic-gradient(rgba(140, 220, 255, 0.20) 0deg 8deg, transparent 8deg 45deg);
+
+  transition: transform 0.06s linear;
+
+}
+
+
+
+.holo-wheel.locked .wheel-face { border-color: rgba(140, 255, 190, 0.8); }
+
+
+
+.wheel-face .hub-dot {
+
+  position: absolute;
+
+  left: 50%;
+
+  top: 50%;
+
+  width: 12px;
+
+  height: 12px;
+
+  margin: -6px 0 0 -6px;
+
+  border-radius: 50%;
+
+  background: #bfeaff;
+
+  box-shadow: 0 0 10px rgba(140, 220, 255, 0.8);
+
+}
+
+
+
+.holo-status {
+
+  padding: 6px 16px;
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 90, 70, 0.55);
+
+  color: #ff9d8f;
+
+  background: rgba(40, 10, 8, 0.5);
+
+  font-size: clamp(1rem, 2vw, 1.3rem);
+
+  letter-spacing: 0.02em;
+
+  white-space: nowrap;
+
+}
+
+
+
+.holo-status.raise {
+
+  border-color: rgba(140, 220, 255, 0.55);
+
+  color: #9ddcff;
+
+  background: rgba(8, 24, 40, 0.5);
+
+}
+
+
+
+.holo-status.done {
+
+  border-color: rgba(70, 240, 140, 0.65);
+
+  color: #8dff9d;
+
+  background: rgba(8, 30, 18, 0.55);
+
+}
+
+
+
+.holo-overlay.lang-en .holo-status {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.45rem, 0.8vw, 0.62rem);
+
+  letter-spacing: 0.06em;
+
+}
+
+
+
+.holo-hint {
+
+  margin: 14px 0 0;
+
+  text-align: center;
+
+  color: rgba(160, 220, 255, 0.6);
+
+  font-weight: 600;
+
+  font-size: clamp(0.95rem, 1.7vw, 1.2rem);
+
+  letter-spacing: 0.02em;
+
+}
+
+
+
+.holo-overlay.lang-en .holo-hint {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.42rem, 0.75vw, 0.58rem);
+
+  letter-spacing: 0.08em;
+
+}
+
+
+
+/* ================== v1.2 — لمس، تخطي، نهاية الجزء ================== */
+
+
+
+/* سطر إضافي في لوحة الإرشادات لأزرار اللمس */
+
+.instructions-panel .panel-touch {
+
+  margin-top: 10px;
+
+  color: #9ddcff;
+
+  font-size: 0.85em;
+
+  opacity: 0.85;
+
+}
+
+
+
+/* —— أزرار التحكم اللمسية —— */
+
+.touch-controls {
+
+  position: fixed;
+
+  inset: auto 0 0 0;
+
+  z-index: 15;               /* فوق اللوحة (10) وتحت الفيديو السينمائي (60) */
+
+  display: flex;
+
+  justify-content: space-between;   /* السهم الأيسر أسفل اليسار — E والسهم الأيمن أسفل اليمين */
+
+  align-items: flex-end;
+
+  padding: 0 max(4vw, env(safe-area-inset-left)) max(5vh, env(safe-area-inset-bottom)) max(4vw, env(safe-area-inset-right));
+
+  pointer-events: none;      /* الحاوية نفسها لا تلتقط — الأزرار فقط */
+
+}
+
+
+
+.touch-controls .tc-group {
+
+  display: flex;
+
+  gap: 14px;
+
+  pointer-events: auto;
+
+  align-items: flex-end;
+
+}
+
+
+
+.tc-btn {
+
+  width: 64px;
+
+  height: 64px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+
+
+  color: #8dff9d;
+
+  background: rgba(4, 12, 10, 0.72);
+
+  border: 1px solid rgba(57, 255, 90, 0.45);
+
+  border-radius: 16px;
+
+
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+
+
+  touch-action: none;
+
+  user-select: none;
+
+  -webkit-user-select: none;
+
+  -webkit-tap-highlight-color: transparent;
+
+
+
+  backdrop-filter: blur(4px);
+
+  -webkit-backdrop-filter: blur(4px);
+
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+
+  transition: transform 0.08s ease, background 0.08s ease;
+
+}
+
+
+
+.tc-btn.held {
+
+  transform: scale(0.92);
+
+  background: rgba(57, 255, 90, 0.22);
+
+  border-color: rgba(57, 255, 90, 0.85);
+
+}
+
+
+
+/* زر التفاعل E — أكبر وأبرز */
+
+.tc-btn.tc-e {
+
+  width: 74px;
+
+  height: 74px;
+
+  font-size: 24px;
+
+  pointer-events: auto;
+
+  color: #d8ffe0;
+
+  border-color: rgba(57, 255, 90, 0.65);
+
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45), 0 0 18px rgba(57, 255, 90, 0.18);
+
+}
+
+
+
+@media (min-width: 900px) and (hover: hover) {
+
+  /* على أجهزة الماوس الكبيرة لا داعي للأزرار إن لمسها المتصفح خطأً */
+
+  .touch-controls { opacity: 0.55; }
+
+}
+
+
+
+/* —— تلميح «نقرة للتخطي» فوق الفيديوهات السينمائية —— */
+
+.skip-hint {
+
+  position: fixed;
+
+  bottom: 3.2vh;
+
+  inset-inline-end: 3vw;
+
+  z-index: 65;               /* فوق الفيديو (60) وتحت الحوار (64→ ملاحظة: الحوار أهم) */
+
+  pointer-events: none;
+
+
+
+  padding: 8px 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+
+  border-radius: 999px;
+
+  background: rgba(0, 0, 0, 0.45);
+
+
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: 1.05rem;
+
+  letter-spacing: 0.02em;
+
+
+
+  opacity: 0;
+
+  animation: skip-fade-in 0.6s ease 1.2s forwards;
+
+}
+
+
+
+.skip-hint.lang-en {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: 0.52rem;
+
+  letter-spacing: 0.08em;
+
+}
+
+
+
+@keyframes skip-fade-in {
+
+  to { opacity: 1; }
+
+}
+
+
+
+/* —— لافتة المهمة — نسخة خضراء (الهدف التالي وليس تحذيراً) —— */
+
+.mission-banner.goal {
+
+  border-color: rgba(70, 240, 140, 0.6);
+
+  background: linear-gradient(180deg, rgba(8, 34, 18, 0.92), rgba(3, 14, 8, 0.95));
+
+  color: #8dff9d;
+
+  animation:
+
+    mission-in 0.4s ease-out both,
+
+    goal-pulse 1.6s ease-in-out 0.4s infinite;
+
+}
+
+
+
+@keyframes goal-pulse {
+
+  0%, 100% { box-shadow: 0 0 16px rgba(57, 255, 90, 0.14); border-color: rgba(70, 240, 140, 0.45); }
+
+  50%      { box-shadow: 0 0 32px rgba(57, 255, 90, 0.40); border-color: rgba(70, 240, 140, 0.95); }
+
+}
+
+
+
+/* —— بطاقة نهاية الجزء «يتبع…» —— */
+
+.chapter-end-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 90;
+
+  background: #000;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3vh;
+
+  padding: 0 8vw;
+
+
+
+  opacity: 0;
+
+  transition: opacity 1.2s ease;
+
+}
+
+
+
+.chapter-end-overlay.show { opacity: 1; }
+
+
+
+.end-title {
+
+  color: #fff;
+
+  text-align: center;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(2.6rem, 6vw, 5rem);
+
+  letter-spacing: 0.02em;
+
+  text-shadow:
+
+    0 0 16px rgba(255, 255, 255, 0.5),
+
+    0 0 50px rgba(255, 255, 255, 0.2);
+
+}
+
+
+
+.chapter-end-overlay.lang-en .end-title {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(1.1rem, 2.6vw, 2.1rem);
+
+  letter-spacing: 0.08em;
+
+}
+
+
+
+.end-sub {
+
+  color: rgba(220, 236, 255, 0.8);
+
+  text-align: center;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+
+  line-height: 1.7;
+
+  max-width: 46ch;
+
+}
+
+
+
+.chapter-end-overlay.lang-en .end-sub {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.5rem, 0.95vw, 0.8rem);
+
+  line-height: 2.1;
+
+  letter-spacing: 0.05em;
+
+}
+
+
+
+.end-prompt {
+
+  color: rgba(255, 255, 255, 0.7);
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+
+  opacity: 0;
+
+}
+
+
+
+.chapter-end-overlay.lang-en .end-prompt {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.45rem, 0.75vw, 0.62rem);
+
+  letter-spacing: 0.1em;
+
+}
+
+
+
+.chapter-end-overlay.ready .end-prompt {
+
+  animation: next-blink 1.1s steps(2) infinite;
+
+  opacity: 1;
+
+}
+
+
+
+/* ================== v1.3 — تكملة القمر: ألغاز الغرف 11-13 ================== */
+
+
+
+/* زر فعل عام للألغاز (اقترب/أطلق/ثبّت) — يعمل للكيبورد واللمس */
+
+.puz-btn {
+
+  display: inline-block;
+
+  margin-top: 12px;
+
+  padding: 10px 26px;
+
+  border-radius: 10px;
+
+  border: 1px solid rgba(57, 255, 90, 0.55);
+
+  background: rgba(6, 24, 14, 0.72);
+
+  color: #8dff9d;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: clamp(1.05rem, 1.9vw, 1.35rem);
+
+  letter-spacing: 0.04em;
+
+  cursor: pointer;
+
+  user-select: none;
+
+  -webkit-user-select: none;
+
+  touch-action: none;
+
+}
+
+
+
+.puz-btn:hover { background: rgba(12, 40, 22, 0.85); }
+
+.puz-btn:active { transform: translateY(1px); }
+
+
+
+.holo-overlay.lang-en .puz-btn {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.5rem, 0.9vw, 0.72rem);
+
+  letter-spacing: 0.08em;
+
+}
+
+
+
+/* —— لغز 1: المسّ الحراري (RHU) —— */
+
+.rhu-body {
+
+  display: flex;
+
+  align-items: stretch;
+
+  justify-content: center;
+
+  gap: clamp(20px, 4vw, 46px);
+
+  padding: 12px 0 4px;
+
+}
+
+
+
+/* حجرة البلوتونيوم + مجس البدلة ينزل نحوها */
+
+.rhu-chamber {
+
+  position: relative;
+
+  width: clamp(90px, 16vw, 130px);
+
+  height: 150px;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: center;
+
+}
+
+
+
+.rhu-core {
+
+  width: 64%;
+
+  height: 44px;
+
+  border-radius: 12px;
+
+  background: radial-gradient(circle at 50% 30%, #ffb457 0%, #c96a1e 55%, #6e3410 100%);
+
+  box-shadow: 0 0 22px rgba(255, 150, 60, 0.45), inset 0 -6px 12px rgba(60, 20, 0, 0.55);
+
+  border: 1px solid rgba(255, 190, 120, 0.5);
+
+}
+
+
+
+.rhu-sensor {
+
+  position: absolute;
+
+  top: -6px;
+
+  left: 50%;
+
+  width: 18px;
+
+  height: 26px;
+
+  margin-left: -9px;
+
+  border-radius: 5px;
+
+  background: linear-gradient(#bfe8ff, #4a9fd8);
+
+  border: 1px solid rgba(200, 240, 255, 0.8);
+
+  box-shadow: 0 0 12px rgba(120, 200, 255, 0.55);
+
+  transition: transform 0.12s linear;
+
+}
+
+
+
+.rhu-sensor.in-safe {
+
+  background: linear-gradient(#b6ffcb, #2ec46a);
+
+  border-color: rgba(150, 255, 180, 0.9);
+
+  box-shadow: 0 0 16px rgba(80, 255, 140, 0.75);
+
+}
+
+
+
+/* الترمومتر العمودي */
+
+.rhu-thermo {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 8px;
+
+}
+
+
+
+.thermo-scale {
+
+  position: relative;
+
+  width: 34px;
+
+  height: 132px;
+
+  border-radius: 999px;
+
+  background: rgba(8, 20, 32, 0.85);
+
+  border: 1px solid rgba(120, 190, 240, 0.4);
+
+  overflow: hidden;
+
+}
+
+
+
+.thermo-fill {
+
+  position: absolute;
+
+  bottom: 0;
+
+  left: 0;
+
+  width: 100%;
+
+  height: 0%;
+
+  background: linear-gradient(#9ddcff, #3f8fc9);
+
+  transition: height 0.09s linear;
+
+}
+
+
+
+.thermo-fill.in-safe {
+
+  background: linear-gradient(#8dff9d, #22b558);
+
+  box-shadow: 0 0 14px rgba(90, 255, 140, 0.65);
+
+}
+
+
+
+.thermo-fill.near-hot {
+
+  background: linear-gradient(#ffb457, #d8542a);
+
+}
+
+
+
+/* شريط النطاق الآمن (14..22 °C على مقياس -120..+40 — إذابة صقيع البطارية) */
+
+.thermo-safe {
+
+  position: absolute;
+
+  left: -5px;
+
+  right: -5px;
+
+  bottom: calc((14 + 120) / 160 * 100%);
+
+  height: calc((22 - 14) / 160 * 100%);
+
+  border: 1px dashed rgba(120, 255, 170, 0.75);
+
+  border-radius: 4px;
+
+  box-shadow: 0 0 8px rgba(90, 255, 140, 0.35);
+
+  pointer-events: none;
+
+}
+
+
+
+.rhu-readout {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.7rem, 1.3vw, 1rem);
+
+  color: #cdeeff;
+
+}
+
+
+
+.rhu-readout i {
+
+  font-style: normal;
+
+  font-size: 0.6em;
+
+  opacity: 0.7;
+
+  margin-inline-start: 3px;
+
+}
+
+
+
+/* وميض أحمر عند التلامس المباشر */
+
+.rhu-overlay.rhu-overheat .holo-panel { animation: rhu-flash-red 0.55s ease-out; }
+
+
+
+@keyframes rhu-flash-red {
+
+  0%   { box-shadow: 0 0 0 rgba(255, 60, 40, 0.9); border-color: rgba(255, 90, 70, 0.95); }
+
+  100% { box-shadow: 0 0 0 rgba(255, 60, 40, 0); }
+
+}
+
+
+
+.holo-status.rhu-flash { animation: rhu-shake 0.4s ease-out; }
+
+
+
+@keyframes rhu-shake {
+
+  0%, 100% { transform: translateX(0); }
+
+  25% { transform: translateX(-5px); }
+
+  50% { transform: translateX(5px); }
+
+  75% { transform: translateX(-3px); }
+
+}
+
+
+
+/* —— لغز 2: معايرة الليزر (LRRR) —— */
+
+.laser-body {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: clamp(16px, 3vw, 34px);
+
+  padding: 12px 0 4px;
+
+}
+
+
+
+.laser-grid {
+
+  position: relative;
+
+  width: min(46vw, 340px);
+
+  height: clamp(150px, 24vh, 200px);
+
+  border: 1px solid rgba(120, 200, 255, 0.4);
+
+  border-radius: 10px;
+
+  background:
+
+    repeating-linear-gradient(0deg, rgba(70, 150, 220, 0.14) 0 1px, transparent 1px 24px),
+
+    repeating-linear-gradient(90deg, rgba(70, 150, 220, 0.14) 0 1px, transparent 1px 24px),
+
+    rgba(4, 12, 22, 0.9);
+
+  overflow: hidden;
+
+}
+
+
+
+/* هدف المركز — حلقة نابضة */
+
+.laser-target {
+
+  position: absolute;
+
+  top: 50%;
+
+  left: 50%;
+
+  width: 46px;
+
+  height: 46px;
+
+  margin: -23px 0 0 -23px;
+
+  border-radius: 50%;
+
+  border: 2px solid rgba(120, 255, 190, 0.85);
+
+  box-shadow: 0 0 14px rgba(80, 255, 170, 0.5), inset 0 0 10px rgba(80, 255, 170, 0.3);
+
+  animation: target-pulse 1.6s ease-in-out infinite;
+
+}
+
+
+
+.laser-target::after {
+
+  content: '';
+
+  position: absolute;
+
+  top: 50%;
+
+  left: 50%;
+
+  width: 6px;
+
+  height: 6px;
+
+  margin: -3px 0 0 -3px;
+
+  border-radius: 50%;
+
+  background: #8dff9d;
+
+}
+
+
+
+@keyframes target-pulse {
+
+  0%, 100% { transform: scale(1); opacity: 0.95; }
+
+  50%      { transform: scale(1.14); opacity: 0.7; }
+
+}
+
+
+
+/* المؤشر المتأرجح */
+
+.laser-reticle {
+
+  position: absolute;
+
+  top: 50%;
+
+  left: 50%;
+
+  width: 56px;
+
+  height: 56px;
+
+  margin: -28px 0 0 -28px;
+
+  border: 2px solid rgba(255, 210, 120, 0.9);
+
+  border-radius: 6px;
+
+  box-shadow: 0 0 12px rgba(255, 190, 90, 0.45);
+
+  pointer-events: none;
+
+}
+
+
+
+.laser-reticle::before,
+
+.laser-reticle::after {
+
+  content: '';
+
+  position: absolute;
+
+  background: rgba(255, 220, 150, 0.9);
+
+}
+
+
+
+.laser-reticle::before { left: 50%; top: 6px; bottom: 6px; width: 1px; margin-left: -0.5px; }
+
+.laser-reticle::after  { top: 50%; left: 6px; right: 6px; height: 1px; margin-top: -0.5px; }
+
+
+
+/* شعاع الإطلاق عند الإصابة */
+
+.laser-beam {
+
+  position: absolute;
+
+  left: 50%;
+
+  top: 50%;
+
+  width: 3px;
+
+  height: 0;
+
+  margin-left: -1.5px;
+
+  background: linear-gradient(#d9ffe9, #39ff5a);
+
+  box-shadow: 0 0 16px rgba(70, 255, 120, 0.9);
+
+  transform: rotate(90deg);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+}
+
+
+
+.laser-beam.fire {
+
+  animation: beam-fire 1.4s ease-out forwards;
+
+}
+
+
+
+@keyframes beam-fire {
+
+  0%   { height: 0;    opacity: 1; }
+
+  45%  { height: 340px; opacity: 1; }
+
+  100% { height: 340px; opacity: 0; }
+
+}
+
+
+
+/* مقياس الإشارة الجانبي */
+
+.laser-side {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 6px;
+
+}
+
+
+
+.laser-meter {
+
+  width: 16px;
+
+  height: clamp(130px, 21vh, 170px);
+
+  border-radius: 999px;
+
+  background: rgba(8, 20, 32, 0.85);
+
+  border: 1px solid rgba(120, 190, 240, 0.4);
+
+  display: flex;
+
+  align-items: flex-end;
+
+  overflow: hidden;
+
+}
+
+
+
+.laser-meter-fill {
+
+  width: 100%;
+
+  height: 0%;
+
+  background: linear-gradient(to top, #39ff5a, #d9ffe9);
+
+  transition: height 0.09s linear;
+
+}
+
+
+
+.laser-meter-label {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.4rem, 0.7vw, 0.55rem);
+
+  letter-spacing: 0.14em;
+
+  color: rgba(160, 220, 255, 0.6);
+
+}
+
+
+
+.laser-overlay.laser-missed .holo-panel { animation: rhu-shake 0.4s ease-out; }
+
+
+
+.holo-status.laser-shake { animation: rhu-shake 0.4s ease-out; }
+
+
+
+/* —— لغز 3: بؤرة الهوائي (Antenna) —— */
+
+.ant-body {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: clamp(18px, 3.4vw, 40px);
+
+  padding: 10px 0 4px;
+
+}
+
+
+
+.ant-dish {
+
+  width: min(42vw, 320px);
+
+  height: auto;
+
+}
+
+
+
+.ant-parabola {
+
+  fill: none;
+
+  stroke: rgba(160, 220, 255, 0.85);
+
+  stroke-width: 3;
+
+}
+
+
+
+.ant-rail {
+
+  stroke: rgba(140, 200, 255, 0.45);
+
+  stroke-width: 1.5;
+
+  stroke-dasharray: 4 5;
+
+}
+
+
+
+.ant-hub { fill: #9ddcff; }
+
+
+
+.ant-tx {
+
+  fill: #ffd29d;
+
+  stroke: rgba(255, 220, 170, 0.9);
+
+  stroke-width: 2;
+
+  filter: drop-shadow(0 0 6px rgba(255, 200, 130, 0.7));
+
+}
+
+
+
+.ant-wave {
+
+  fill: none;
+
+  stroke: rgba(140, 255, 190, 0.9);
+
+  stroke-width: 2;
+
+  animation: ant-wave 1.1s ease-out infinite;
+
+}
+
+
+
+@keyframes ant-wave {
+
+  0%   { r: 10; opacity: 0.95; stroke-width: 2.5; }
+
+  100% { r: 46; opacity: 0;    stroke-width: 0.5; }
+
+}
+
+
+
+/* مقياس الإشارة 12 شريط */
+
+.ant-meter {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 8px;
+
+}
+
+
+
+.ant-bars {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 4px;
+
+  height: clamp(110px, 18vh, 150px);
+
+  padding: 8px 10px;
+
+  border-radius: 10px;
+
+  background: rgba(8, 20, 32, 0.75);
+
+  border: 1px solid rgba(120, 190, 240, 0.35);
+
+}
+
+
+
+.ant-bars i {
+
+  width: clamp(7px, 1vw, 10px);
+
+  height: 100%;
+
+  border-radius: 3px;
+
+  background: rgba(120, 190, 240, 0.14);
+
+}
+
+
+
+.ant-bars i.on {
+
+  background: linear-gradient(to top, #1f8f5a, #8dff9d);
+
+  box-shadow: 0 0 8px rgba(90, 255, 150, 0.5);
+
+}
+
+
+
+.ant-bars i.on.hot {
+
+  background: linear-gradient(to top, #39ff5a, #e9fff0);
+
+  box-shadow: 0 0 12px rgba(160, 255, 190, 0.85);
+
+}
+
+
+
+.ant-gain {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.55rem, 1vw, 0.8rem);
+
+  color: #8dff9d;
+
+}
+
+
+
+.ant-overlay.ant-locked .ant-gain { animation: target-pulse 0.9s ease-in-out infinite; }
+
+
+
+/* ============================================================
+
+ — توسعة الفصل الأول + الفصل الثاني (المريخ)
+
+ ============================================================ */
+
+
+
+
+
+/* ================== شريط تقدم الإصلاح HUD ================== */
+
+.repair-hud {
+
+  position: fixed;
+
+  top: 72px;
+
+  left: 14px;
+
+  z-index: 11;
+
+
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 8px 12px;
+
+
+
+  background: rgba(4, 12, 10, 0.85);
+
+  border: 1px solid rgba(57, 255, 90, 0.35);
+
+  border-radius: 12px;
+
+}
+
+
+
+.repair-hud .rh-label {
+
+  font-size: 0.8rem;
+
+  font-weight: 800;
+
+  color: #8dff9d;
+
+}
+
+
+
+.lang-en .repair-hud .rh-label {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.52rem;
+
+}
+
+
+
+.repair-hud .rh-bar {
+
+  width: clamp(90px, 14vw, 170px);
+
+  height: 10px;
+
+  border-radius: 5px;
+
+  background: rgba(57, 255, 90, 0.10);
+
+  border: 1px solid rgba(57, 255, 90, 0.30);
+
+  overflow: hidden;
+
+}
+
+
+
+.repair-hud .rh-bar i {
+
+  display: block;
+
+  height: 100%;
+
+  background: linear-gradient(to left, #39ff5a, #1f8f5a);
+
+  box-shadow: 0 0 10px rgba(57, 255, 90, 0.55);
+
+  transition: width 0.7s ease;
+
+}
+
+
+
+.repair-hud .rh-pct {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.62rem;
+
+  color: #8dff9d;
+
+  min-width: 42px;
+
+  text-align: center;
+
+}
+
+
+
+/* ================== لغز ختم خط الوقود ================== */
+
+.fuel-body {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+
+  padding: 12px 6px;
+
+}
+
+
+
+.fuel-pipe-wrap { padding: 0 10px; }
+
+
+
+.fuel-pipe {
+
+  position: relative;
+
+  height: 26px;
+
+  border-radius: 13px;
+
+  background: linear-gradient(to bottom, #3d434d, #22262d);
+
+  border: 1px solid #565e6a;
+
+}
+
+
+
+.fuel-pipe::after {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 4px 8px;
+
+  border-radius: 8px;
+
+  background: repeating-linear-gradient(90deg,
+
+    rgba(255,255,255,0.06) 0 6px, transparent 6px 14px);
+
+}
+
+
+
+.fuel-leak {
+
+  position: absolute;
+
+  top: -7px;
+
+  width: 12px;
+
+  height: 40px;
+
+  transform: translateX(-50%);
+
+  background:
+
+    radial-gradient(circle at 50% 30%, rgba(255, 176, 66, 0.95) 0 3px, transparent 4px),
+
+    radial-gradient(circle at 30% 60%, rgba(255, 140, 40, 0.8) 0 2px, transparent 3px),
+
+    radial-gradient(circle at 70% 55%, rgba(255, 200, 90, 0.7) 0 2px, transparent 3px);
+
+  filter: drop-shadow(0 0 6px rgba(255, 170, 60, 0.8));
+
+}
+
+
+
+.fuel-clamp {
+
+  position: absolute;
+
+  top: -12px;
+
+  width: 18px;
+
+  height: 50px;
+
+  transform: translateX(-50%);
+
+  background: linear-gradient(to bottom, #c8ccd4, #8b909a 55%, #5f646e);
+
+  border: 2px solid #33383f;
+
+  border-radius: 5px;
+
+  box-shadow: 0 0 12px rgba(200, 210, 230, 0.35);
+
+  transition: left 0.05s linear;
+
+}
+
+
+
+.fuel-clamp::before {
+
+  content: '';
+
+  position: absolute;
+
+  left: 3px; right: 3px; top: 8px;
+
+  height: 4px;
+
+  background: #2c3037;
+
+  border-radius: 2px;
+
+}
+
+
+
+.fuel-mark {
+
+  margin-top: 6px;
+
+  text-align: center;
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.5rem;
+
+  color: #7d8590;
+
+  letter-spacing: 0.14em;
+
+}
+
+
+
+.fuel-gauge {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 10px;
+
+}
+
+
+
+.fuel-gauge-bar {
+
+  flex: 1;
+
+  height: 16px;
+
+  border-radius: 8px;
+
+  background: rgba(255, 80, 70, 0.10);
+
+  border: 1px solid rgba(255, 110, 90, 0.4);
+
+  overflow: hidden;
+
+}
+
+
+
+.fuel-gauge-bar i {
+
+  display: block;
+
+  height: 100%;
+
+  width: 0;
+
+  background: linear-gradient(to left, #ffb03f, #ff6a3d);
+
+  transition: width 0.1s linear;
+
+}
+
+
+
+.fuel-gauge-bar i.in-safe {
+
+  background: linear-gradient(to left, #39ff5a, #1f8f5a);
+
+  box-shadow: 0 0 12px rgba(57, 255, 90, 0.6);
+
+}
+
+
+
+.fuel-readout {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.72rem;
+
+  color: #ffd29d;
+
+  min-width: 96px;
+
+  text-align: center;
+
+}
+
+
+
+.fuel-readout i { font-size: 0.5rem; color: #8a7c66; margin-right: 4px; font-style: normal; }
+
+
+
+/* ================== لغز الإشعال التجريبي ================== */
+
+.ign-body {
+
+  display: flex;
+
+  align-items: stretch;
+
+  gap: 22px;
+
+  padding: 12px 10px;
+
+}
+
+
+
+.ign-chamber {
+
+  position: relative;
+
+  width: 108px;
+
+  height: 148px;
+
+  border-radius: 14px;
+
+  border: 2px solid #4a5058;
+
+  background:
+
+    radial-gradient(circle at 50% 80%, #1c1610 0%, #0a0908 70%);
+
+  overflow: hidden;
+
+}
+
+
+
+.ign-chamber::before {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 8px;
+
+  border-radius: 10px;
+
+  border: 1px dashed rgba(150, 160, 175, 0.25);
+
+}
+
+
+
+.ign-core {
+
+  position: absolute;
+
+  left: 14px; right: 14px; bottom: 12px; top: 30%;
+
+  border-radius: 10px;
+
+  background: radial-gradient(circle at 50% 85%, #fff7d6 0%, #ffb03f 38%, #c2481f 75%, transparent 100%);
+
+  filter: blur(1px);
+
+  opacity: 0.15;
+
+  transition: opacity 0.12s linear;
+
+}
+
+
+
+.ign-thermo { flex: 1; display: flex; gap: 12px; align-items: stretch; }
+
+
+
+.ign-thermo .thermo-scale {
+
+  position: relative;
+
+  flex: 1;
+
+  min-width: 90px;
+
+}
+
+
+
+.ign-thermo .thermo-safe {
+
+  position: absolute;
+
+  bottom: 62%;
+
+  height: 18%;
+
+  width: 100%;
+
+  background: rgba(57, 255, 90, 0.16);
+
+  border-top: 2px solid rgba(57, 255, 90, 0.65);
+
+  border-bottom: 2px solid rgba(57, 255, 90, 0.65);
+
+}
+
+
+
+.ign-readout {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.85rem;
+
+  color: #ffd29d;
+
+  align-self: center;
+
+  min-width: 74px;
+
+  text-align: center;
+
+}
+
+
+
+.ign-readout i { display: block; font-size: 0.5rem; color: #8a7c66; font-style: normal; margin-top: 4px; }
+
+
+
+.ign-cycles {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 4px 0 10px;
+
+}
+
+
+
+.ign-cycles i {
+
+  width: 16px;
+
+  height: 16px;
+
+  border-radius: 4px;
+
+  border: 1px solid rgba(57, 255, 90, 0.4);
+
+  background: rgba(57, 255, 90, 0.06);
+
+}
+
+
+
+.ign-cycles i.on {
+
+  background: #39ff5a;
+
+  box-shadow: 0 0 12px rgba(57, 255, 90, 0.75);
+
+}
+
+
+
+/* ================== لغز مسح الغبار (أوبي) ================== */
+
+.dust-body {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 14px;
+
+  align-items: center;
+
+  padding: 10px 4px;
+
+}
+
+
+
+.dust-body canvas {
+
+  width: min(520px, 82vw);
+
+  height: auto;
+
+  border-radius: 12px;
+
+  border: 2px solid #4a3a2a;
+
+  image-rendering: pixelated;
+
+  background: #141210;
+
+}
+
+
+
+.dust-gauge {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  width: min(520px, 82vw);
+
+}
+
+
+
+.dust-gauge-bar {
+
+  flex: 1;
+
+  height: 14px;
+
+  border-radius: 7px;
+
+  background: rgba(255, 140, 60, 0.08);
+
+  border: 1px solid rgba(255, 150, 90, 0.4);
+
+  overflow: hidden;
+
+}
+
+
+
+.dust-gauge-bar i {
+
+  display: block;
+
+  height: 100%;
+
+  width: 0;
+
+  background: linear-gradient(to left, #ffd29d, #ff8a4a);
+
+  transition: width 0.15s linear;
+
+}
+
+
+
+.dust-readout {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.62rem;
+
+  color: #ffd29d;
+
+  min-width: 58px;
+
+  text-align: center;
+
+}
+
+
+
+.dust-readout i { font-style: normal; font-size: 0.45rem; margin-right: 3px; color: #8a7c66; }
+
+
+
+/* ================== لغز منارة الطوارئ ================== */
+
+.beacon-body {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+
+  padding: 12px 6px;
+
+}
+
+
+
+.beacon-scale {
+
+  position: relative;
+
+  height: 34px;
+
+  border-radius: 8px;
+
+  background: rgba(157, 220, 255, 0.06);
+
+  border: 1px solid rgba(157, 220, 255, 0.3);
+
+  margin: 0 8px;
+
+}
+
+
+
+.beacon-band {
+
+  position: absolute;
+
+  top: 0; bottom: 0;
+
+  background: rgba(80, 170, 255, 0.30);
+
+  border-left: 2px solid rgba(120, 200, 255, 0.8);
+
+  border-right: 2px solid rgba(120, 200, 255, 0.8);
+
+  box-shadow: 0 0 14px rgba(80, 170, 255, 0.35) inset;
+
+}
+
+
+
+.beacon-marker {
+
+  position: absolute;
+
+  top: -8px;
+
+  bottom: -8px;
+
+  width: 6px;
+
+  transform: translateX(-50%);
+
+  background: #eaf6ff;
+
+  border-radius: 3px;
+
+  box-shadow: 0 0 12px rgba(200, 235, 255, 0.9);
+
+  transition: left 0.05s linear;
+
+}
+
+
+
+.beam-wrap {
+
+  height: 66px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+
+  background: #060a10;
+
+  border: 1px solid rgba(157, 220, 255, 0.2);
+
+}
+
+
+
+.beam {
+
+  position: absolute;
+
+  left: 50%;
+
+  top: 0; bottom: 0;
+
+  width: 26px;
+
+  transform: translateX(-50%);
+
+  background: linear-gradient(to bottom, rgba(140, 215, 255, 0.95), rgba(80, 160, 255, 0.25));
+
+  filter: blur(2px);
+
+  opacity: 0.12;
+
+}
+
+
+
+.beam.locked {
+
+  animation: beam-lock 0.7s ease-in-out infinite alternate;
+
+}
+
+
+
+@keyframes beam-lock {
+
+  from { box-shadow: 0 0 10px 2px rgba(120, 200, 255, 0.5); }
+
+  to   { box-shadow: 0 0 30px 8px rgba(120, 200, 255, 0.85); }
+
+}
+
+
+
+.beacon-meter {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+}
+
+
+
+.beacon-meter-bar {
+
+  flex: 1;
+
+  height: 14px;
+
+  border-radius: 7px;
+
+  background: rgba(157, 220, 255, 0.07);
+
+  border: 1px solid rgba(157, 220, 255, 0.35);
+
+  overflow: hidden;
+
+}
+
+
+
+.beacon-meter-bar i {
+
+  display: block;
+
+  height: 100%;
+
+  width: 0;
+
+  background: linear-gradient(to left, #9ddcff, #2f7fd9);
+
+  transition: width 0.1s linear;
+
+}
+
+
+
+.beacon-meter-bar i.in-safe {
+
+  background: linear-gradient(to left, #b7ecff, #39a0ff);
+
+  box-shadow: 0 0 12px rgba(120, 200, 255, 0.7);
+
+}
+
+
+
+.beacon-readout {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.62rem;
+
+  color: #9ddcff;
+
+  min-width: 58px;
+
+  text-align: center;
+
+}
+
+
+
+.beacon-readout i { font-style: normal; font-size: 0.45rem; margin-right: 3px; color: #6b7f8f; }
+
+
+
+/* ================== لوحة الشرف الكونية ================== */
+
+.honor-overlay { z-index: 88; }
+
+
+
+.honor-card {
+
+  border-color: rgba(255, 210, 130, 0.55);
+
+  box-shadow: 0 0 60px rgba(255, 200, 110, 0.14), 0 20px 60px rgba(0, 0, 0, 0.7);
+
+  cursor: pointer;
+
+  max-width: 620px;
+
+}
+
+
+
+.honor-next {
+
+  margin-top: 18px;
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.55rem;
+
+  color: #b78f4e;
+
+  letter-spacing: 0.16em;
+
+  animation: target-pulse 1.1s ease-in-out infinite;
+
+}
+
+
+
+/* ================== الختام — الرسالة والنهاية ================== */
+
+.finale-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 90;
+
+  background: #030304;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 34px;
+
+  padding: 8vh 8vw;
+
+  text-align: center;
+
+  opacity: 0;
+
+  transition: opacity 1.1s ease;
+
+}
+
+
+
+.finale-overlay.show { opacity: 1; }
+
+
+
+.finale-text {
+
+  max-width: 640px;
+
+  font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+
+  line-height: 2.15;
+
+  color: #cfd8dc;
+
+  white-space: pre-line;
+
+  opacity: 0;
+
+  transform: translateY(10px);
+
+  transition: opacity 1.4s ease, transform 1.4s ease;
+
+}
+
+
+
+.finale-text.show { opacity: 1; transform: translateY(0); }
+
+
+
+.finale-title {
+
+  font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+
+  font-weight: 900;
+
+  color: #ffd76e;
+
+  text-shadow: 0 0 24px rgba(255, 200, 90, 0.45), 0 0 60px rgba(255, 180, 60, 0.2);
+
+  opacity: 0;
+
+  transform: scale(0.94);
+
+  transition: opacity 1.2s ease, transform 1.2s ease;
+
+}
+
+
+
+.lang-en .finale-title { font-family: 'Press Start 2P', monospace; font-size: clamp(0.9rem, 2.4vw, 1.6rem); }
+
+
+
+.finale-title.show { opacity: 1; transform: scale(1); }
+
+
+
+.finale-credits {
+
+  font-size: 0.9rem;
+
+  color: #7d8894;
+
+  white-space: pre-line;
+
+  line-height: 2.2;
+
+  opacity: 0;
+
+  transition: opacity 1.2s ease;
+
+}
+
+
+
+.finale-credits.show { opacity: 1; }
+
+
+
+.finale-prompt {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.6rem;
+
+  color: #9fb2be;
+
+  letter-spacing: 0.14em;
+
+  opacity: 0;
+
+  animation: none;
+
+}
+
+
+
+.finale-prompt.show { opacity: 1; animation: target-pulse 1.3s ease-in-out infinite; }
+
+
+
+/* بطاقة الفصل الثاني — لمسة بردية مريخية */
+
+.chapter-end-overlay.mars-card .end-title { color: #ffb37a; text-shadow: 0 0 30px rgba(255, 130, 60, 0.35); }
+
+.chapter-end-overlay.mars-card .end-sub { color: #c9a27e; }
+
+
+
+/* =========================================================
+
+ — حديقة التراث الفضائي: أنماط المشاهد الجديدة
+
+ ========================================================= */
+
+
+
+/* بوابة العزل : الشارة الخضراء الملتصقة بالباب أُزيلت —
+
+   علامة [E] العائمة العادية (drawPromptBadge) تُستخدم فوق الباب — */
+
+
+
+/* — شعاع المنارة الأزرق فوق صارية أوبي — عمود نيون يخترق السماء — */
+
+.mars-beam {
+
+  position: fixed;
+
+  width: 14px;
+
+  height: 0;
+
+  transform: translateX(-50%);
+
+  z-index: 40;
+
+  background: linear-gradient(to top,
+
+              rgba(120, 220, 255, 0.95) 0%,
+
+              rgba(80, 180, 255, 0.75) 40%,
+
+              rgba(60, 140, 255, 0.30) 75%,
+
+              rgba(60, 140, 255, 0) 100%);
+
+  border-radius: 7px 7px 0 0;
+
+  box-shadow: 0 0 24px rgba(90, 190, 255, 0.85), 0 0 70px rgba(70, 150, 255, 0.45);
+
+  opacity: 0;
+
+  transition: height 0.9s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.4s ease;
+
+  pointer-events: none;
+
+}
+
+
+
+.mars-beam.fire {
+
+  height: 92vh;
+
+  opacity: 1;
+
+  animation: beam-glow 0.55s ease-in-out infinite alternate;
+
+}
+
+
+
+@keyframes beam-glow {
+
+  from { box-shadow: 0 0 18px rgba(90, 190, 255, 0.65), 0 0 55px rgba(70, 150, 255, 0.35); }
+
+  to   { box-shadow: 0 0 34px rgba(120, 215, 255, 1.0), 0 0 110px rgba(80, 170, 255, 0.65); }
+
+}
+
+
+
+/* : مشهد الشروق السينمائي أُزيل (غرفة مشي عادية بدلاً منه) —
+
+   والخاتمة المكتوبة حرفاً بحرف: أبيض كبير بروح بطاقة الفصل الأول — */
+
+.finale-overlay.type-finale { gap: 34px; }
+
+
+
+.finale-overlay.type-finale .finale-text {
+
+  max-width: min(760px, 86vw);
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.6rem, 3.2vw, 2.7rem);
+
+  line-height: 1.85;
+
+  color: #ffffff;
+
+  white-space: pre-line;
+
+  text-align: center;
+
+  opacity: 1;
+
+  transform: none;
+
+  text-shadow:
+
+    0 0 14px rgba(255, 255, 255, 0.45),
+
+    0 0 44px rgba(255, 255, 255, 0.18);
+
+  min-height: 9.5em;
+
+}
+
+
+
+.finale-overlay.type-finale.lang-en .finale-text {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-weight: 400;
+
+  font-size: clamp(0.68rem, 1.35vw, 1.05rem);
+
+  line-height: 2.3;
+
+  letter-spacing: 0.06em;
+
+  min-height: 13em;
+
+}
+
+
+
+/* مؤشر الكتابة الوامض أثناء الطباعة */
+
+.finale-text.typing::after,
+
+.finale-title.typing::after {
+
+  content: '▌';
+
+  margin-inline-start: 2px;
+
+  opacity: 0.9;
+
+  animation: type-caret 0.7s steps(2) infinite;
+
+}
+
+
+
+@keyframes type-caret { 50% { opacity: 0; } }
+
+
+
+.finale-overlay.type-finale .finale-title {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+
+  color: #ffd76e;
+
+  min-height: 1.4em;
+
+  opacity: 1;
+
+  transform: none;
+
+}
+
+
+
+.finale-overlay.type-finale.lang-en .finale-title {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.95rem, 2.4vw, 1.7rem);
+
+}
+
+
+
+/* — سؤال فريق NileStro بعد النهاية — */
+
+.finale-team {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 20px;
+
+  opacity: 0;
+
+  transform: translateY(12px);
+
+  transition: opacity 0.9s ease, transform 0.9s ease;
+
+  pointer-events: none;
+
+}
+
+
+
+.finale-team.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+
+
+.finale-team-q {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+
+  color: #ffe9c9;
+
+  text-align: center;
+
+  text-shadow: 0 0 18px rgba(255, 200, 120, 0.3);
+
+}
+
+
+
+.lang-en .finale-team-q {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.6rem, 1.1vw, 0.85rem);
+
+  line-height: 1.9;
+
+}
+
+
+
+.finale-team-btns {
+
+  display: flex;
+
+  gap: 18px;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+}
+
+
+
+.finale-btn {
+
+  padding: 12px 30px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+
+  color: #e9f6ff;
+
+  background: rgba(6, 14, 22, 0.9);
+
+  border: 1px solid rgba(120, 200, 255, 0.5);
+
+  box-shadow: 0 0 18px rgba(80, 170, 255, 0.16);
+
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+}
+
+
+
+.finale-btn:hover {
+
+  transform: translateY(-2px);
+
+  border-color: rgba(160, 225, 255, 0.9);
+
+  box-shadow: 0 0 30px rgba(100, 190, 255, 0.4);
+
+}
+
+
+
+.lang-en .finale-btn {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.62rem;
+
+  padding: 14px 24px;
+
+}
+
+
+
+.finale-btn.yes { border-color: rgba(255, 205, 100, 0.6); color: #ffe3ad; }
+
+.finale-btn.yes:hover { box-shadow: 0 0 30px rgba(255, 195, 90, 0.4); border-color: rgba(255, 225, 150, 0.95); }
+
+
+
+/* — شاشة فريق NileStro — */
+
+.team-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 92;
+
+  background:
+
+    radial-gradient(ellipse at 50% 18%, rgba(28, 48, 88, 0.55) 0%, rgba(3, 4, 8, 0) 60%),
+
+    #04060c;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3vh;
+
+  padding: 5vh 7vw;
+
+  text-align: center;
+
+  opacity: 0;
+
+  transition: opacity 1s ease;
+
+}
+
+
+
+.team-overlay.show { opacity: 1; }
+
+
+
+.team-title {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+
+  color: #fff;
+
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.5), 0 0 50px rgba(255, 255, 255, 0.2);
+
+}
+
+
+
+.lang-en .team-title { font-family: 'Press Start 2P', monospace; font-size: clamp(1.2rem, 2.8vw, 2.2rem); }
+
+
+
+.team-sub {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+
+  color: rgba(214, 231, 255, 0.82);
+
+}
+
+
+
+.lang-en .team-sub { font-family: 'Press Start 2P', monospace; font-size: clamp(0.5rem, 0.95vw, 0.75rem); line-height: 2; }
+
+
+
+.team-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+
+  gap: 16px;
+
+  width: min(860px, 92vw);
+
+  margin-top: 1.2vh;
+
+}
+
+
+
+.team-card {
+
+  padding: 20px 14px 16px;
+
+  border-radius: 14px;
+
+  background: rgba(10, 18, 30, 0.72);
+
+  border: 1px solid rgba(110, 190, 255, 0.28);
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 0 24px rgba(70, 140, 230, 0.06);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  align-items: center;
+
+}
+
+
+
+.team-role {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+
+  color: #8fd0ff;
+
+  letter-spacing: 0.03em;
+
+}
+
+
+
+.lang-en .team-role { font-family: 'Press Start 2P', monospace; font-size: 0.56rem; }
+
+
+
+.team-name {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+
+  color: #fff;
+
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
+
+}
+
+
+
+.lang-en .team-name { font-family: 'Press Start 2P', monospace; font-size: 0.8rem; }
+
+
+
+.team-footer {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.42rem, 0.75vw, 0.6rem);
+
+  letter-spacing: 0.12em;
+
+  color: #7d8894;
+
+  line-height: 2;
+
+  margin-top: 1.4vh;
+
+}
+
+
+
+.team-back {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 700;
+
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+
+  color: rgba(255, 255, 255, 0.7);
+
+  cursor: pointer;
+
+  padding: 10px 22px;
+
+  border-radius: 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+
+  background: rgba(255, 255, 255, 0.04);
+
+}
+
+
+
+.lang-en .team-back { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; }
+
+
+
+.team-back:hover { color: #fff; border-color: rgba(255, 255, 255, 0.55); }
+
+
+
+/* — شاشات قصيرة: تصغير الخاتمة كي لا تفيض خارج الشاشة — */
+
+@media (max-height: 700px) {
+
+  .finale-overlay.type-finale { gap: 14px; padding: 3.5vh 6vw; }
+
+  .finale-overlay.type-finale .finale-text {
+
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+
+    min-height: 8em;
+
+    line-height: 1.7;
+
+  }
+
+  .finale-overlay.type-finale.lang-en .finale-text { font-size: clamp(0.58rem, 1.15vw, 0.9rem); min-height: 11em; }
+
+  .finale-overlay.type-finale .finale-title { font-size: clamp(1.7rem, 4vw, 3.2rem); }
+
+  .finale-overlay.type-finale.lang-en .finale-title { font-size: clamp(0.8rem, 2vw, 1.4rem); }
+
+  .finale-team-q { font-size: clamp(1.1rem, 1.9vw, 1.5rem); }
+
+  .finale-btn { padding: 9px 22px; }
+
+}
+
+
+
+/* =========================================================
+
+ — خلف الكواليس: خاتمة فريق NileStro التفاعلية
+
+ ========================================================= */
+
+
+
+/* — الصورة الأخيرة بعد اللقاء والنهاية: الأخوان داخل القمرة (start-bg.jpg)
+
+     خلف النص الختامي مع ستائر تعتيم علوية وسفلية لوضوح الكتابة — */
+
+.finale-overlay.has-photo {
+
+  background-size: cover;
+
+  background-position: center 30%;
+
+  background-repeat: no-repeat;
+
+}
+
+
+
+.finale-overlay.has-photo::before {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  background: linear-gradient(to bottom,
+
+              rgba(3, 3, 4, 0.88) 0%,
+
+              rgba(3, 3, 4, 0.55) 42%,
+
+              rgba(3, 3, 4, 0.55) 58%,
+
+              rgba(3, 3, 4, 0.90) 100%);
+
+  pointer-events: none;
+
+}
+
+
+
+.finale-overlay.has-photo > * { position: relative; z-index: 1; }
+
+
+
+/* — بطاقة الانتقال السينمائية «انتقال إلى استوديو تطوير NileStro» — */
+
+.credits-intro-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 95;
+
+  background: #030304;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 6vh 8vw;
+
+  opacity: 0;
+
+  transition: opacity 0.8s ease;
+
+}
+
+
+
+.credits-intro-overlay.show { opacity: 1; }
+
+.credits-intro-overlay.leave { opacity: 0; }
+
+
+
+.credits-intro-card { text-align: center; }
+
+
+
+.credits-intro-icon {
+
+  width: 46px;
+
+  height: 46px;
+
+  margin: 0 auto 26px;
+
+  border-radius: 10px;
+
+  border: 2px solid rgba(255, 205, 100, 0.6);
+
+  background:
+
+    radial-gradient(circle at 50% 42%, rgba(255, 215, 110, 0.85) 0 18%, rgba(255, 215, 110, 0) 22%),
+
+    linear-gradient(to bottom, rgba(255, 190, 80, 0.12), rgba(255, 190, 80, 0.02));
+
+  box-shadow: 0 0 26px rgba(255, 195, 90, 0.25);
+
+  animation: credits-pulse 1.6s ease-in-out infinite alternate;
+
+}
+
+
+
+@keyframes credits-pulse {
+
+  from { box-shadow: 0 0 14px rgba(255, 195, 90, 0.18); }
+
+  to   { box-shadow: 0 0 34px rgba(255, 205, 110, 0.45); }
+
+}
+
+
+
+.credits-intro-title {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.7rem, 3.6vw, 3rem);
+
+  color: #ffd76e;
+
+  text-shadow: 0 0 24px rgba(255, 200, 90, 0.4);
+
+}
+
+
+
+.lang-en .credits-intro-title {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.85rem, 2.1vw, 1.4rem);
+
+  line-height: 1.9;
+
+}
+
+
+
+.credits-intro-sub {
+
+  margin-top: 14px;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+
+  color: #93a3b0;
+
+  letter-spacing: 0.06em;
+
+}
+
+
+
+.lang-en .credits-intro-sub {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.55rem, 1.2vw, 0.8rem);
+
+}
+
+
+
+/* — شاشة التوديع الجماعية: الفريق الأربعة في كادر بكسل أخير — */
+
+.credits-wave-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 96;
+
+  background:
+
+    radial-gradient(ellipse at 50% 118%, rgba(57, 255, 90, 0.10) 0%, rgba(57, 255, 90, 0) 55%),
+
+    linear-gradient(to bottom, #05070b 0%, #0a1018 55%, #05070b 100%);
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3.2vh;
+
+  padding: 5vh 6vw;
+
+  text-align: center;
+
+  opacity: 0;
+
+  transition: opacity 1s ease;
+
+}
+
+
+
+.credits-wave-overlay.show { opacity: 1; }
+
+
+
+.wave-title {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+
+  color: #8dff9d;
+
+  text-shadow: 0 0 22px rgba(57, 255, 90, 0.35);
+
+}
+
+
+
+.lang-en .wave-title {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.8rem, 2vw, 1.25rem);
+
+  line-height: 1.9;
+
+}
+
+
+
+.wave-row {
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: center;
+
+  gap: clamp(6px, 3vw, 46px);
+
+  flex-wrap: wrap;
+
+}
+
+
+
+.wave-char {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  animation: wave-bob 1.5s ease-in-out infinite alternate;
+
+}
+
+
+
+.wave-char canvas {
+
+  width: clamp(120px, 15vw, 210px);
+
+  height: auto;
+
+  image-rendering: pixelated;
+
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.55));
+
+}
+
+
+
+.wave-name {
+
+  margin-top: 4px;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: clamp(0.95rem, 1.6vw, 1.3rem);
+
+  color: #cfd8dc;
+
+}
+
+
+
+.lang-en .wave-name {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.5rem, 1vw, 0.68rem);
+
+}
+
+
+
+@keyframes wave-bob {
+
+  from { transform: translateY(0); }
+
+  to   { transform: translateY(-9px); }
+
+}
+
+
+
+.wave-line {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.25rem, 2.6vw, 2.1rem);
+
+  color: #ffd76e;
+
+  text-shadow: 0 0 20px rgba(255, 200, 90, 0.35);
+
+}
+
+
+
+.lang-en .wave-line {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.62rem, 1.5vw, 1rem);
+
+  line-height: 1.9;
+
+}
+
+
+
+.wave-btns {
+
+  display: flex;
+
+  gap: 18px;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  margin-top: 1.2vh;
+
+}
+
+
+
+.wave-btn {
+
+  padding: 12px 30px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 800;
+
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+
+  color: #e9f6ff;
+
+  background: rgba(6, 14, 22, 0.92);
+
+  border: 1px solid rgba(57, 255, 90, 0.45);
+
+  box-shadow: 0 0 18px rgba(57, 255, 90, 0.14);
+
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+}
+
+
+
+.wave-btn:hover {
+
+  transform: translateY(-2px);
+
+  border-color: rgba(140, 255, 160, 0.9);
+
+  box-shadow: 0 0 30px rgba(57, 255, 90, 0.4);
+
+}
+
+
+
+.lang-en .wave-btn {
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: 0.62rem;
+
+  padding: 14px 24px;
+
+}
+
+
+
+.wave-btn.replay { border-color: rgba(255, 205, 100, 0.6); color: #ffe3ad; }
+
+.wave-btn.replay:hover { box-shadow: 0 0 30px rgba(255, 195, 90, 0.4); border-color: rgba(255, 225, 150, 0.95); }
+
+
+
+@media (max-width: 700px) {
+
+  .wave-char canvas { width: clamp(96px, 22vw, 150px); }
+
+  .wave-row { gap: 4px; }
+
+  .credits-intro-title { font-size: clamp(1.4rem, 6vw, 2.2rem); }
+
+}
+
+
+/* ================== لافتة «أدر جهازك» — الجوال في الوضع الرأسي ================== */
+
+/* تظهر فقط على أجهزة اللمس في الوضع الرأسي (قفل أفقي عملي للمشهد الثاني) */
+
+.rotate-overlay {
+
+  display: none;                 /* مخفية افتراضياً */
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 120;                  /* فوق كل شيء داخل المشهد */
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 22px;
+
+  padding: 30px;
+
+  text-align: center;
+
+  background:
+
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 2px, transparent 2px 4px),
+
+    linear-gradient(180deg, #0c1236 0%, #060a1c 100%);
+
+}
+
+
+.rotate-overlay svg {
+
+  width: 84px;
+
+  height: 84px;
+
+  fill: rgba(57, 255, 90, 0.9);
+
+  color: rgba(57, 255, 90, 0.9);
+
+  animation: rot-phone 2.6s ease-in-out infinite;
+
+}
+
+
+@keyframes rot-phone {
+
+  0%, 20%   { transform: rotate(0deg); }
+
+  55%, 75%  { transform: rotate(-90deg); }
+
+  100%      { transform: rotate(0deg); }
+
+}
+
+
+.rotate-overlay p {
+
+  margin: 0;
+
+  font-family: 'Press Start 2P', monospace;
+
+  font-size: clamp(0.8rem, 3.4vw, 1.1rem);
+
+  line-height: 2;
+
+  color: #eaf4ff;
+
+  text-shadow: 0 0 14px rgba(120, 170, 255, 0.5);
+
+}
+
+
+.rotate-overlay p span {
+
+  display: block;
+
+  margin-top: 10px;
+
+  font-size: 0.6em;
+
+  color: rgba(159, 208, 255, 0.75);
+
+  letter-spacing: 0.08em;
+
+}
+
+
+.rotate-overlay .rot-ar {
+
+  font-family: 'Handjet', sans-serif;
+
+  font-weight: 900;
+
+  font-size: clamp(1.9rem, 7vw, 2.6rem);
+
+  line-height: 1.5;
+
+}
+
+
+/* لغة واحدة فقط حسب اتجاه الصفحة */
+
+html[dir="ltr"] .rotate-overlay .rot-ar { display: none; }
+
+html[dir="rtl"] .rotate-overlay .rot-en { display: none; }
+
+
+/* لا تظهر إلا على أجهزة اللمس وفي الوضع الرأسي فقط */
+
+@media (orientation: portrait) and (pointer: coarse) {
+
+  .rotate-overlay { display: flex; }
+
+}

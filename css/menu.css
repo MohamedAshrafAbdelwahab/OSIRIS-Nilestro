@@ -1,0 +1,1056 @@
+/* =========================================================
+
+   ABANDONED BUT NOT FORGOTTEN — NileStro
+
+   الجزء الأول: صفحة البداية (Start Screen)
+
+   ========================================================= */
+
+
+
+:root {
+
+  --btn-blue: #2456d8;
+
+  --btn-blue-hover: #2f66f0;
+
+  --btn-blue-shadow: #16307e;
+
+  --btn-gold: #a87e1c;
+
+  --btn-gold-hover: #c69a2e;
+
+  --btn-gold-shadow: #5e4409;
+
+  --title-white: #e8f0ff;
+
+  --team-orange: #e8934a;
+
+  --tagline-gold: #ffd76a;
+
+  --space-black: #060812;
+
+  --font-pixel: "Press Start 2P", monospace;
+
+  --font-arabic: "Handjet", sans-serif;
+
+}
+
+
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+
+
+html, body {
+
+  width: 100%;
+
+  height: 100%;
+
+  overflow: hidden;
+
+  background: var(--space-black);
+
+  font-family: var(--font-pixel);
+
+  user-select: none;
+
+}
+
+
+
+/* ================== خلفية الفيديو ================== */
+
+.video-wrap {
+
+  position: fixed;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  z-index: 0;
+
+}
+
+
+
+.video-wrap video {
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  /* في العربية ينعكس الفيديو: الشخصيات تنتقل لليسار */
+
+  transition: transform 0.4s ease;
+
+}
+
+
+
+html[dir="rtl"] .video-wrap video {
+
+  transform: scaleX(-1);
+
+}
+
+
+
+/* تدرّج لتحسين قراءة النصوص فوق الفيديو (يتقلب مع الاتجاه) */
+
+.readability-gradient {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  background: linear-gradient(90deg, rgba(4, 6, 14, 0.85) 0%, rgba(4, 6, 14, 0.45) 38%, rgba(4, 6, 14, 0) 65%);
+
+}
+
+
+
+html[dir="rtl"] .readability-gradient {
+
+  background: linear-gradient(90deg, rgba(4, 6, 14, 0) 35%, rgba(4, 6, 14, 0.45) 62%, rgba(4, 6, 14, 0.85) 100%);
+
+}
+
+
+
+/* ================== منطقة القائمة ================== */
+
+/* في الإنجليزية: يمين الفيديو (شخصيات) — القائمة يسار */
+
+.menu-side {
+
+  position: fixed;
+
+  z-index: 2;
+
+  top: 0;
+
+  left: 0;
+
+  height: 100%;
+
+  width: 42%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 0 3.5rem 4rem 4rem;
+
+}
+
+
+
+/* في العربية: القائمة يمين */
+
+html[dir="rtl"] .menu-side {
+
+  left: auto;
+
+  right: 0;
+
+  padding: 0 4rem 4rem 3.5rem;
+
+  text-align: right;
+
+}
+
+
+
+/* ---------- العنوان ---------- */
+
+.title-block { margin-bottom: 3rem; }
+
+
+
+/* «مشروع» — سطر تمهيدي صغير فوق الاسم */
+
+.project-label {
+
+  color: #9fd0ff;
+
+  font-size: clamp(0.55rem, 1vw, 0.72rem);
+
+  letter-spacing: 0.55em;
+
+  text-transform: uppercase;
+
+  margin-bottom: 0.9rem;
+
+  text-shadow: 2px 2px 0 rgba(6, 10, 26, 0.9);
+
+}
+
+
+
+html[dir="rtl"] .project-label {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 700;
+
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+
+  letter-spacing: 0.35em;
+
+}
+
+
+
+/* «أوزيريس» — الاسم البارز */
+
+.game-title {
+
+  color: var(--title-white);
+
+  font-size: clamp(2.6rem, 6vw, 5rem);
+
+  line-height: 1.05;
+
+  letter-spacing: 0.06em;
+
+  text-shadow:
+
+    0 0 22px rgba(120, 170, 255, 0.65),
+
+    0 0 60px rgba(120, 170, 255, 0.25),
+
+    5px 5px 0 #1b2a5e;
+
+  white-space: pre-line;
+
+}
+
+
+
+html[dir="rtl"] .game-title {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900; /* Handjet Black — أثقل وزن حتى لا يظهر نحيفاً */
+
+  letter-spacing: 0.02em;
+
+  font-size: clamp(3.6rem, 8vw, 7rem);
+
+  line-height: 1.1;
+
+}
+
+
+
+/* السطر التعريفي تحت الاسم */
+
+.game-tagline {
+
+  margin-top: 1rem;
+
+  color: var(--tagline-gold);
+
+  font-size: clamp(0.62rem, 1.15vw, 0.85rem);
+
+  letter-spacing: 0.22em;
+
+  text-shadow:
+
+    0 0 14px rgba(255, 215, 106, 0.35),
+
+    3px 3px 0 rgba(20, 14, 4, 0.9);
+
+}
+
+
+
+html[dir="rtl"] .game-tagline {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900;
+
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+
+  letter-spacing: 0.06em;
+
+}
+
+
+
+.team-credit {
+
+  margin-top: 0.9rem;
+
+  color: var(--team-orange);
+
+  font-size: clamp(0.66rem, 1.1vw, 0.88rem);
+
+  text-shadow: 3px 3px 0 rgba(20, 12, 4, 0.9);
+
+}
+
+
+
+html[dir="rtl"] .team-credit {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900;
+
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+
+}
+
+
+
+/* ---------- الأزرار ---------- */
+
+.menu-buttons {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.9rem;
+
+  width: min(100%, 380px);
+
+}
+
+
+
+.pixel-btn {
+
+  font-family: inherit;
+
+  font-size: clamp(0.78rem, 1.05vw, 0.95rem);
+
+  letter-spacing: 0.12em;
+
+  color: #ffffff;
+
+  background: var(--btn-blue);
+
+  border: 2px solid #0c1c4e;
+
+  padding: 0.85rem 1.2rem;
+
+  cursor: pointer;
+
+  box-shadow:
+
+    inset -4px -4px 0 var(--btn-blue-shadow),
+
+    inset 4px 4px 0 rgba(255, 255, 255, 0.28),
+
+    0 4px 0 rgba(0, 0, 0, 0.55);
+
+  transition: background 0.12s ease, transform 0.08s ease, box-shadow 0.12s ease;
+
+  text-align: center;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+}
+
+
+
+.pixel-btn svg {
+
+  width: 18px;
+
+  height: 18px;
+
+  flex: none;
+
+  fill: currentColor;
+
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
+
+}
+
+
+
+.pixel-btn:hover:not(:disabled) {
+
+  background: var(--btn-blue-hover);
+
+  transform: translateY(-2px);
+
+}
+
+
+
+.pixel-btn:active:not(:disabled) {
+
+  transform: translateY(1px);
+
+  box-shadow:
+
+    inset 4px 4px 0 var(--btn-blue-shadow),
+
+    0 1px 0 rgba(0, 0, 0, 0.55);
+
+}
+
+
+
+.pixel-btn:disabled {
+
+  cursor: not-allowed;
+
+  filter: grayscale(0.85) brightness(0.55);
+
+}
+
+
+
+/* زر دليل ناسا — الذهبي المميز (أهم زر ثانوي في القائمة) */
+
+.pixel-btn.manual {
+
+  background: var(--btn-gold);
+
+  border-color: #4a350c;
+
+  box-shadow:
+
+    inset -4px -4px 0 var(--btn-gold-shadow),
+
+    inset 4px 4px 0 rgba(255, 255, 255, 0.32),
+
+    0 4px 0 rgba(0, 0, 0, 0.55),
+
+    0 0 18px rgba(255, 215, 106, 0.22);
+
+}
+
+
+
+.pixel-btn.manual:hover:not(:disabled) {
+
+  background: var(--btn-gold-hover);
+
+  box-shadow:
+
+    inset -4px -4px 0 var(--btn-gold-shadow),
+
+    inset 4px 4px 0 rgba(255, 255, 255, 0.32),
+
+    0 4px 0 rgba(0, 0, 0, 0.55),
+
+    0 0 26px rgba(255, 215, 106, 0.4);
+
+}
+
+
+
+html[dir="rtl"] .pixel-btn.manual span { font-size: 1.5rem; }
+
+
+/* نص الزر أطول من البقية — نقبضه قليلاً ليظل على سطر واحد منسجم مع البقية */
+
+.pixel-btn.manual {
+
+  font-size: clamp(0.6rem, 0.85vw, 0.74rem);
+
+  letter-spacing: 0.08em;
+
+  white-space: nowrap;
+
+  padding-top: 0.78rem;
+
+  padding-bottom: 0.78rem;
+
+}
+
+
+
+
+/* زر صغير (تغيير اللغة / إغلاق) */
+
+.pixel-btn.small {
+
+  font-size: 0.62rem;
+
+  padding: 0.55rem 0.9rem;
+
+  letter-spacing: 0.06em;
+
+}
+
+
+
+html[dir="rtl"] .pixel-btn.small {
+
+  font-family: var(--font-arabic);
+
+  font-size: 1.25rem;
+
+  font-weight: 900;
+
+}
+
+
+
+/* ---------- انتقال إلى المشاهد ---------- */
+
+body.fade-out {
+
+  animation: screen-fade 0.35s ease forwards;
+
+}
+
+
+
+@keyframes screen-fade {
+
+  to { opacity: 0; filter: brightness(0); }
+
+}
+
+
+
+/* ================== الشريط العلوي — أيقونات صغيرة أنيقة ================== */
+
+.top-bar {
+
+  position: fixed;
+
+  top: 14px;
+
+  inset-inline-end: 14px;   /* يمين في LTR ويسار في RTL تلقائياً */
+
+  z-index: 2;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+}
+
+
+
+.icon-btn {
+
+  min-width: 42px;
+
+  height: 42px;
+
+  padding: 0 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: var(--title-white);
+
+  background: rgba(6, 10, 26, 0.78);
+
+  border: 2px solid #0c1c4e;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-family: var(--font-pixel);
+
+  font-size: 0.55rem;
+
+  letter-spacing: 0.08em;
+
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5);
+
+  transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+
+  backdrop-filter: blur(4px);
+
+  -webkit-backdrop-filter: blur(4px);
+
+}
+
+
+
+html[dir="rtl"] .icon-btn {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900;
+
+  font-size: 1.3rem;
+
+}
+
+
+
+.icon-btn svg {
+
+  width: 18px;
+
+  height: 18px;
+
+  fill: currentColor;
+
+}
+
+
+
+.icon-btn:hover {
+
+  border-color: var(--btn-blue-hover);
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5), 0 0 14px rgba(120, 170, 255, 0.25);
+
+}
+
+
+
+.icon-btn:active { transform: translateY(1px); }
+
+
+
+
+
+/* ================== نافذة الإعدادات ================== */
+
+.modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 10;
+
+  background: rgba(2, 4, 10, 0.75);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  backdrop-filter: blur(3px);
+
+}
+
+
+
+.modal-overlay.hidden { display: none; }
+
+
+
+.modal-box {
+
+  background: #0b1030;
+
+  border: 3px solid var(--btn-blue);
+
+  box-shadow: 0 0 0 3px #0c1c4e, 0 10px 40px rgba(0, 0, 0, 0.8);
+
+  padding: 2.2rem 2.6rem;
+
+  min-width: min(92vw, 460px);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1.6rem;
+
+}
+
+
+
+.modal-title {
+
+  color: var(--title-white);
+
+  font-size: 1.1rem;
+
+  letter-spacing: 0.15em;
+
+  text-align: center;
+
+  text-shadow: 0 0 10px rgba(120, 170, 255, 0.5);
+
+}
+
+
+
+html[dir="rtl"] .modal-title {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900;
+
+  font-size: 1.9rem;
+
+  letter-spacing: 0;
+
+}
+
+
+
+.setting-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  color: var(--title-white);
+
+  font-size: 0.75rem;
+
+  letter-spacing: 0.08em;
+
+}
+
+
+
+html[dir="rtl"] .setting-row {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900;
+
+  font-size: 1.5rem;
+
+  flex-direction: row-reverse;
+
+}
+
+
+
+html[dir="rtl"] .volume-value {
+
+  font-size: 1.2rem;
+
+}
+
+
+
+.setting-row label,
+
+.setting-row span:first-child {
+
+  flex: 1;
+
+  text-align: inherit;
+
+}
+
+
+
+html[dir="rtl"] .setting-row span:first-child { text-align: right; }
+
+
+
+/* منزلق الصوت بستايل بيكسل */
+
+input[type="range"] {
+
+  -webkit-appearance: none;
+
+  appearance: none;
+
+  flex: 1.4;
+
+  height: 14px;
+
+  background: #0c1540;
+
+  border: 2px solid #0c1c4e;
+
+  outline: none;
+
+  cursor: pointer;
+
+}
+
+
+
+input[type="range"]::-webkit-slider-thumb {
+
+  -webkit-appearance: none;
+
+  width: 16px;
+
+  height: 26px;
+
+  background: var(--btn-blue-hover);
+
+  border: 2px solid #0c1c4e;
+
+  box-shadow: inset -3px -3px 0 var(--btn-blue-shadow), inset 3px 3px 0 rgba(255,255,255,0.3);
+
+  cursor: pointer;
+
+}
+
+
+
+input[type="range"]::-moz-range-thumb {
+
+  width: 16px;
+
+  height: 26px;
+
+  background: var(--btn-blue-hover);
+
+  border: 2px solid #0c1c4e;
+
+  border-radius: 0;
+
+  cursor: pointer;
+
+}
+
+
+
+.volume-value {
+
+  min-width: 3ch;
+
+  text-align: center;
+
+  color: #9fd0ff;
+
+  font-size: 0.7rem;
+
+}
+
+
+
+.close-btn { align-self: center; margin-top: 0.4rem; }
+
+
+
+/* ================== قسم الملفات داخل الإعدادات ================== */
+
+.setting-row.files-row {
+
+  flex-direction: column;
+
+  align-items: stretch;
+
+  gap: 0.7rem;
+
+  padding-top: 0.4rem;
+
+  border-top: 1px dashed rgba(120, 170, 255, 0.25);
+
+}
+
+
+
+html[dir="rtl"] .setting-row.files-row { flex-direction: column; }
+
+
+
+.files-row > span {
+
+  color: var(--title-white);
+
+  font-size: 0.75rem;
+
+  letter-spacing: 0.08em;
+
+}
+
+
+
+html[dir="rtl"] .files-row > span {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900;
+
+  font-size: 1.5rem;
+
+  letter-spacing: 0;
+
+}
+
+
+
+.files-btns {
+
+  display: flex;
+
+  gap: 0.7rem;
+
+  flex-wrap: wrap;
+
+}
+
+
+
+.files-btns .pixel-btn { flex: 1 1 180px; }
+
+
+
+/* ================== شريط تحميل الأصول ==================
+
+   يظهر أسفل أزرار القائمة فوق الخلفية الحية أثناء التحميل
+
+   المسبق الكامل — لا يحجب الخلفية ولا يستبدلها بشاشة سوداء.
+
+   الأزرار مقفلة حتى اكتمال النسبة، ثم يختفي الشريط بسلاسة. */
+
+.preload-hud {
+
+  margin-top: 2.4rem;
+
+  width: min(100%, 380px);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.6rem;
+
+  transition: opacity 0.5s ease;
+
+}
+
+
+
+.preload-hud.done { opacity: 0; pointer-events: none; }
+
+
+
+.preload-label {
+
+  font-size: clamp(0.62rem, 1vw, 0.8rem);
+
+  letter-spacing: 0.08em;
+
+  color: #ffd76a;
+
+  text-shadow: 2px 2px 0 rgba(10, 8, 2, 0.9);
+
+}
+
+
+
+html[dir="rtl"] .preload-label {
+
+  font-family: var(--font-arabic);
+
+  font-weight: 900;
+
+  font-size: 1.35rem;
+
+  letter-spacing: 0.02em;
+
+}
+
+
+
+.preload-bar {
+
+  height: 14px;
+
+  background: rgba(6, 10, 24, 0.75);
+
+  border: 2px solid #0c1c4e;
+
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.5), 0 3px 0 rgba(0, 0, 0, 0.55);
+
+  overflow: hidden;
+
+}
+
+
+
+.preload-fill {
+
+  display: block;
+
+  height: 100%;
+
+  width: 0%;
+
+  background: repeating-linear-gradient(-45deg, #ffd76a 0 10px, #e8b63e 10px 20px);
+
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.25), inset 3px 3px 0 rgba(255, 255, 255, 0.35);
+
+  transition: width 0.3s ease;
+
+}
+
+
+/* ================== تجاوب القائمة — الجوال والتابلت ================== */
+
+@media (max-width: 760px) {
+
+  .menu-side {
+
+    width: 100%;
+
+    padding: 4.6rem 1.5rem 2.2rem;
+
+    justify-content: center;
+
+  }
+
+  .title-block { margin-bottom: 2rem; text-align: center; }
+
+  .game-title { font-size: clamp(2.4rem, 13vw, 3.6rem); }
+
+  html[dir="rtl"] .game-title { font-size: clamp(3rem, 16vw, 4.6rem); }
+
+  .game-tagline { font-size: clamp(0.56rem, 2.6vw, 0.7rem); letter-spacing: 0.14em; }
+
+  html[dir="rtl"] .game-tagline { font-size: clamp(1.15rem, 4.4vw, 1.5rem); }
+
+  .team-credit { font-size: clamp(0.58rem, 2.4vw, 0.72rem); }
+
+  html[dir="rtl"] .team-credit { font-size: clamp(1.1rem, 4vw, 1.4rem); }
+
+  .menu-buttons { width: 100%; max-width: 420px; gap: 0.7rem; }
+
+  .pixel-btn { padding: 0.9rem 1rem; font-size: 0.72rem; }
+
+  .preload-hud { width: 100%; max-width: 420px; margin-top: 1.6rem; }
+
+}
+
+@media (max-height: 560px) and (min-width: 761px) {
+
+  .title-block { margin-bottom: 1.6rem; }
+
+  .game-title { font-size: clamp(2rem, 5vw, 3.2rem); }
+
+  .menu-buttons { gap: 0.6rem; }
+
+  .pixel-btn { padding: 0.65rem 1rem; }
+
+}

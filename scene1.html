@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#060812" />
+  <title>Project OSIRIS — Scene 1: The Archive</title>
+
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Handjet:wght@400..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/scene1.css" />
+</head>
+<body data-page="scene-standalone" class="game-body">
+  <!-- طبقة الانتقال السلس (الشاشة السوداء → فايد) -->
+  <div id="transitionOverlay" class="transition-overlay"></div>
+
+  <!-- حاوية شاشة CRT -->
+  <div class="crt" id="crt">
+
+    <!-- طبقات المؤثرات -->
+    <div class="scanlines"></div>
+    <div class="scan-band"></div>
+    <div class="flicker"></div>
+    <div class="vignette"></div>
+
+    <!-- محتوى الطرفية -->
+    <div class="term" id="terminal" aria-live="polite"></div>
+
+    <!-- تلميح الصوت -->
+    <div class="audio-hint" id="audioHint"></div>
+
+    <!-- شارة المشهد -->
+    <div class="scene-tag" id="sceneTag">ARCHIVE</div>
+  </div>
+
+  <!-- طبقة إطفاء الشاشة (نهاية المشهد) -->
+  <div class="crt-off-overlay" id="crtOff"></div>
+
+  <script src="js/assets.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/scene1.js"></script>
+</body>
+</html>

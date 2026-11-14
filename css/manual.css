@@ -1,0 +1,615 @@
+/* =========================================================
+   manual.css — نافذة «دليل المهمة ومصادر ناسا»
+   ---------------------------------------------------------
+   نفس هوية اللعبة: بيكسل سبيس / طرفية خضراء / كحلي داكن
+   - English: Press Start 2P (عناوين) + VT323 (نصوص)
+   - العربية: Handjet 700-900
+   - دعم RTL كامل عبر .lang-ar (البانل يضبط dir بنفسه)
+   ========================================================= */
+
+/* ---------- الطبقة الخارجية ---------- */
+.manual-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;                 /* فوق كل طبقات اللعبة والقائمة */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3vh 2vw;
+  background: rgba(2, 4, 10, 0.78);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  animation: manual-in 0.22s ease-out both;
+}
+
+@keyframes manual-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------- البانل الرئيسي ---------- */
+.manual-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(96vw, 1020px);
+  height: min(90vh, 860px);
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0 2px, transparent 2px 4px),
+    linear-gradient(180deg, #0c1236 0%, #070b22 100%);
+  border: 3px solid #2456d8;
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 3px #0c1c4e,
+    0 0 34px rgba(57, 255, 90, 0.10),
+    0 26px 70px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  animation: manual-pop 0.26s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes manual-pop {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- الرأس ---------- */
+.manual-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px 9px;
+  border-bottom: 1px solid rgba(120, 170, 255, 0.22);
+  background: linear-gradient(180deg, rgba(36, 86, 216, 0.20), transparent);
+}
+
+.manual-head-txt {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.manual-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.66rem, 1.5vw, 0.95rem);
+  letter-spacing: 0.06em;
+  color: #8dff9d;
+  text-shadow: 0 0 12px rgba(57, 255, 90, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.manual-sub {
+  font-family: 'VT323', monospace;
+  font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+  color: rgba(159, 208, 255, 0.75);
+  letter-spacing: 0.04em;
+}
+
+.manual-overlay.lang-ar .manual-title {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  letter-spacing: 0.02em;
+  white-space: normal;
+}
+
+.manual-overlay.lang-ar .manual-sub {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  color: rgba(159, 208, 255, 0.8);
+}
+
+.manual-close {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.8rem;
+  color: #ffd76a;
+  background: rgba(4, 10, 26, 0.85);
+  border: 1px solid rgba(255, 215, 106, 0.45);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.08s ease;
+}
+
+.manual-close:hover {
+  background: rgba(255, 215, 106, 0.16);
+  transform: translateY(-1px);
+}
+
+/* ---------- إقرار «قصة خيالية عن آلات حقيقية» ---------- */
+.manual-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 9px 18px 0;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 215, 106, 0.5);
+  border-radius: 10px;
+  background: rgba(255, 215, 106, 0.08);
+  box-shadow: inset 0 0 18px rgba(255, 215, 106, 0.05);
+}
+
+.md-icon {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.7rem;
+  color: #0b0f2a;
+  background: #ffd76a;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(255, 215, 106, 0.45);
+}
+
+.md-text {
+  font-family: 'VT323', monospace;
+  font-size: clamp(1.02rem, 1.7vw, 1.25rem);
+  line-height: 1.45;
+  color: #ffe9b0;
+}
+
+.manual-overlay.lang-ar .md-text {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  line-height: 1.5;
+}
+
+/* ---------- التبويبات ---------- */
+.manual-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 9px 18px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.manual-tabs::-webkit-scrollbar { display: none; }
+
+.manual-tab {
+  flex: none;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.5rem, 1vw, 0.62rem);
+  letter-spacing: 0.06em;
+  color: #9fd0ff;
+  padding: 10px 14px;
+  background: rgba(9, 16, 44, 0.9);
+  border: 1px solid rgba(120, 170, 255, 0.3);
+  border-radius: 10px 10px 0 0;
+  border-bottom: none;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease, transform 0.08s ease;
+}
+
+.manual-tab:hover {
+  color: #eaf4ff;
+  background: rgba(20, 34, 86, 0.9);
+  transform: translateY(-1px);
+}
+
+.manual-tab.active {
+  color: #8dff9d;
+  background: rgba(57, 255, 90, 0.10);
+  border-color: rgba(57, 255, 90, 0.5);
+  text-shadow: 0 0 10px rgba(57, 255, 90, 0.5);
+}
+
+.manual-overlay.lang-ar .manual-tab {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  letter-spacing: 0;
+}
+
+/* ---------- جسم الدليل (تمرير) ---------- */
+.manual-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 18px 16px;
+  border-top: 1px solid rgba(120, 170, 255, 0.18);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(57, 255, 90, 0.35) rgba(6, 10, 26, 0.6);
+}
+
+.manual-body::-webkit-scrollbar { width: 10px; }
+.manual-body::-webkit-scrollbar-track { background: rgba(6, 10, 26, 0.6); }
+.manual-body::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 90, 0.3);
+  border-radius: 6px;
+}
+
+.manual-sub {
+  font-family: 'VT323', monospace;
+  font-size: clamp(1.02rem, 1.7vw, 1.2rem);
+  color: rgba(159, 208, 255, 0.85);
+  margin: 0 0 10px;
+}
+
+.manual-overlay.lang-ar .manual-sub {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+}
+
+/* ---------- بطاقات الآلات ---------- */
+.manual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 14px;
+}
+
+.manual-card {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(13, 22, 58, 0.95), rgba(7, 11, 30, 0.95));
+  border: 1px solid rgba(120, 170, 255, 0.28);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.manual-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(57, 255, 90, 0.55);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 18px rgba(57, 255, 90, 0.08);
+}
+
+.mc-img {
+  width: 100%;
+  height: 118px;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid rgba(120, 170, 255, 0.22);
+  image-rendering: auto;
+}
+
+.mc-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 13px 12px;
+  flex: 1;
+}
+
+.mc-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.56rem, 1vw, 0.68rem);
+  line-height: 1.45;
+  color: #eaf4ff;
+  text-shadow: 0 0 10px rgba(120, 170, 255, 0.35);
+}
+
+.manual-overlay.lang-ar .mc-title {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  line-height: 1.3;
+}
+
+.mc-where {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: #ffd76a;
+  letter-spacing: 0.03em;
+}
+
+.manual-overlay.lang-ar .mc-where {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.mc-text {
+  font-family: 'VT323', monospace;
+  font-size: clamp(1.02rem, 1.5vw, 1.16rem);
+  line-height: 1.42;
+  color: rgba(224, 236, 255, 0.92);
+  flex: 1;
+}
+
+.manual-overlay.lang-ar .mc-text {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.14rem, 1.8vw, 1.4rem);
+  line-height: 1.5;
+}
+
+.mc-source {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(120, 170, 255, 0.25);
+}
+
+.mc-source-name {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: rgba(159, 208, 255, 0.85);
+  line-height: 1.35;
+}
+
+.manual-overlay.lang-ar .mc-source-name {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+/* ---------- زر الرابط الرسمي ---------- */
+.manual-link-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: #06210f;
+  background: #57e07a;
+  border: 2px solid #1c7a3c;
+  border-radius: 9px;
+  padding: 8px 12px;
+  box-shadow:
+    inset -3px -3px 0 rgba(11, 66, 31, 0.55),
+    inset 3px 3px 0 rgba(255, 255, 255, 0.35),
+    0 3px 0 rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.12s ease;
+  white-space: nowrap;
+}
+
+.manual-link-btn:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.manual-link-btn:active { transform: translateY(1px); }
+
+.manual-link-btn.tiny {
+  font-size: 0.5rem;
+  padding: 7px 10px;
+}
+
+.manual-overlay.lang-ar .manual-link-btn {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+  letter-spacing: 0;
+}
+
+.manual-overlay.lang-ar .manual-link-btn.tiny {
+  font-size: 1.1rem;
+}
+
+/* ---------- قسم «ما وراء اللعبة» ---------- */
+.manual-beyond {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border: 1px dashed rgba(255, 215, 106, 0.4);
+  border-radius: 14px;
+  background: rgba(255, 215, 106, 0.04);
+}
+
+.manual-beyond h3 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.55rem, 1.1vw, 0.7rem);
+  color: #ffd76a;
+  text-shadow: 0 0 10px rgba(255, 215, 106, 0.35);
+  margin: 0 0 4px;
+}
+
+.manual-overlay.lang-ar .manual-beyond h3 {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+}
+
+.beyond-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.beyond-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(9, 16, 44, 0.65);
+  border: 1px solid rgba(120, 170, 255, 0.16);
+}
+
+.beyond-list li > span {
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  color: rgba(224, 236, 255, 0.92);
+  flex: 1;
+  min-width: 200px;
+}
+
+.manual-overlay.lang-ar .beyond-list li > span {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+/* ---------- جدول المصادر ---------- */
+.manual-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'VT323', monospace;
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+}
+
+.manual-table th {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.06em;
+  color: #8dff9d;
+  text-align: inherit;
+  padding: 10px 12px;
+  border-bottom: 2px solid rgba(57, 255, 90, 0.35);
+  white-space: nowrap;
+}
+
+.manual-overlay.lang-ar .manual-table th {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  letter-spacing: 0;
+}
+
+.manual-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(120, 170, 255, 0.14);
+  color: rgba(224, 236, 255, 0.9);
+  vertical-align: middle;
+}
+
+.manual-table td.mt-name {
+  color: #9fd0ff;
+  white-space: nowrap;
+}
+
+.manual-overlay.lang-ar .manual-table td,
+.manual-overlay.lang-ar .manual-table th {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.manual-table tr:hover td {
+  background: rgba(57, 255, 90, 0.04);
+}
+
+/* ---------- تبويب الملفات ---------- */
+.manual-docs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.doc-card {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(13, 22, 58, 0.95), rgba(7, 11, 30, 0.95));
+  border: 1px solid rgba(255, 215, 106, 0.35);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.doc-img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-bottom: 1px solid rgba(255, 215, 106, 0.25);
+}
+
+.doc-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 16px;
+  flex: 1;
+}
+
+.doc-inner h4 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.62rem;
+  line-height: 1.6;
+  color: #ffd76a;
+  text-shadow: 0 0 10px rgba(255, 215, 106, 0.3);
+  margin: 0;
+}
+
+.manual-overlay.lang-ar .doc-inner h4 {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 900;
+  font-size: 1.55rem;
+}
+
+.doc-inner p {
+  font-family: 'VT323', monospace;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: rgba(224, 236, 255, 0.9);
+  margin: 0;
+  flex: 1;
+}
+
+.manual-overlay.lang-ar .doc-inner p {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 600;
+  font-size: 1.35rem;
+}
+
+.doc-inner .manual-link-btn { align-self: flex-start; }
+
+/* ---------- التذييل ---------- */
+.manual-foot {
+  padding: 9px 20px 11px;
+  border-top: 1px solid rgba(120, 170, 255, 0.18);
+  font-family: 'VT323', monospace;
+  font-size: 0.98rem;
+  color: rgba(159, 208, 255, 0.55);
+  letter-spacing: 0.03em;
+}
+
+.manual-overlay.lang-ar .manual-foot {
+  font-family: 'Handjet', sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* ---------- التجاوب ---------- */
+@media (max-width: 720px) {
+  .manual-overlay { padding: 2vh 2vw; }
+
+  .manual-panel {
+    width: 100%;
+    height: 94vh;
+    border-radius: 14px;
+  }
+
+  .manual-head { padding: 12px 14px 10px; }
+
+  .manual-tabs { padding: 10px 14px 0; }
+
+  .manual-body { padding: 12px 14px 14px; }
+
+  .manual-grid { grid-template-columns: 1fr; }
+
+  .mc-img { height: 130px; }
+
+  .manual-disclaimer { margin: 10px 14px 0; padding: 8px 10px; }
+
+  .manual-table { font-size: 1rem; }
+
+  .manual-table th { padding: 8px 8px; }
+
+  .manual-table td { padding: 8px 8px; }
+
+  .manual-table td.mt-name { white-space: normal; }
+
+  .manual-link-btn { align-self: stretch; }
+}

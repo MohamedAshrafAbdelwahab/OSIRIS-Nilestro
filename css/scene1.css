@@ -1,0 +1,228 @@
+/* =========================================================
+   Scene 1 — The Archive Screen
+   شاشة سوداء + تأثير CRT + طباعة نص أخضر فسفوري
+   ========================================================= */
+
+:root {
+  --phosphor: #39ff5a;
+  --phosphor-dim: #1d9e33;
+  --phosphor-glow: rgba(57, 255, 90, 0.55);
+  --font-pixel: "Press Start 2P", monospace;
+  --font-arabic: "Handjet", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  user-select: none;
+}
+
+/* ================== شاشة CRT ================== */
+.crt {
+  position: fixed;
+  inset: 0;
+  background: #010401;
+  cursor: pointer; /* الشاشة تشير للنقر (تخطي/متابعة) */
+}
+
+/* —— خطوط المسح الأفقية (Scanlines) —— */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.28) 0px,
+    rgba(0, 0, 0, 0.28) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* —— شعاع ضوئي يجوب الشاشة من فوق لتحت —— */
+.scan-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 90px;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(
+    0deg,
+    rgba(57, 255, 90, 0) 0%,
+    rgba(57, 255, 90, 0.035) 60%,
+    rgba(57, 255, 90, 0.07) 92%,
+    rgba(57, 255, 90, 0.12) 100%
+  );
+  animation: band-sweep 5.5s linear infinite;
+}
+
+@keyframes band-sweep {
+  0%   { top: -90px; }
+  100% { top: 100%; }
+}
+
+/* —— وميض خفيف كشاشات قديمة —— */
+.flicker {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: rgba(57, 255, 90, 0.03);
+  animation: screen-flicker 0.12s steps(2) infinite;
+}
+
+@keyframes screen-flicker {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.55; }
+  100% { opacity: 1; }
+}
+
+/* —— تظليل حواف الشاشة —— */
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 52%,
+    rgba(0, 0, 0, 0.55) 88%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+}
+
+/* ================== الطرفية (النص) ================== */
+.term {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  padding: 9vh 10vw;
+  overflow: hidden;
+  direction: rtl;          /* الافتراضي عربي — يتبدل من JS */
+  text-align: start;
+  font-family: var(--font-arabic);
+  font-weight: 900;
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+  line-height: 1.55;
+  color: var(--phosphor);
+  text-shadow:
+    0 0 6px var(--phosphor-glow),
+    0 0 18px rgba(57, 255, 90, 0.35);
+  white-space: pre-wrap;   /* يحافظ على مسافات الأسطر الداخلية */
+  word-break: break-word;
+}
+
+.term.dir-en {
+  direction: ltr;
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: clamp(0.65rem, 1.15vw, 0.95rem);
+  line-height: 1.9;
+  letter-spacing: 0.06em;
+}
+
+/* المؤشر الوامض في نهاية الكتابة */
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-inline-start: 0.15em;
+  background: var(--phosphor);
+  box-shadow: 0 0 8px var(--phosphor-glow);
+  vertical-align: text-bottom;
+  animation: caret-blink 0.8s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  0%, 49%  { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ================== تلميح الصوت ================== */
+.audio-hint {
+  position: fixed;
+  z-index: 8;
+  bottom: 1.2rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-arabic);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #79c98a;
+  opacity: 0.75;
+  transition: opacity 0.5s ease;
+}
+
+.audio-hint.dir-en { font-family: var(--font-pixel); font-size: 0.55rem; }
+
+.audio-hint.hidden { opacity: 0; }
+
+/* ================== شارة المشهد ================== */
+.scene-tag {
+  position: fixed;
+  z-index: 8;
+  top: 1rem;
+  inset-inline-end: 1.2rem;
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  color: var(--phosphor-dim);
+  text-shadow: 0 0 6px rgba(57, 255, 90, 0.3);
+}
+
+/* ================== طبقة الانتقال السلس (الشاشة السوداء) ================== */
+.transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9999;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.9s ease;
+}
+
+.transition-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.crt-off-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.crt-off-overlay.active { opacity: 1; }
+
+/* ================== مذايري المشهد المضمّن (index.html) ================== */
+/* المشهد يتحرك داخل الصفحة الرئيسة — شفاف مخفي حتى يُطلَق */
+.scene-host {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+
+.scene-host.hidden-scene { display: none; }
+
+.crt.off {
+  animation: crt-power-off 0.55s ease-in forwards;
+}
+
+@keyframes crt-power-off {
+  0%   { transform: scaleY(1);    filter: brightness(1); }
+  55%  { transform: scaleY(0.04); filter: brightness(2.4); }  /* خط أفقي ساطع */
+  75%  { transform: scaleY(0.04) scaleX(0.7); filter: brightness(3); }
+  100% { transform: scaleY(0.0001) scaleX(0); filter: brightness(0); }
+}
